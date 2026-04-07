@@ -42,7 +42,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-amber-200/60 selection:text-zinc-950">
+      <body
+        className="min-h-full flex flex-col bg-background text-foreground selection:bg-amber-200/60 selection:text-zinc-950"
+        suppressHydrationWarning
+      >
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
