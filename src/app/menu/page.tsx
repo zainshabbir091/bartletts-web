@@ -74,40 +74,7 @@ export default function MenuPage() {
         <Container className="py-10">
           <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
           <aside className="hidden lg:block">
-            <div className="sticky top-24 space-y-4">
-              <div className="rounded-2xl border border-black/10 bg-white/70 p-4 shadow-sm backdrop-blur">
-                <div className="px-2 pb-2 text-xs font-semibold text-zinc-500">
-                  Categories
-                </div>
-                <nav className="max-h-[60vh] overflow-y-auto pr-1">
-                  <button
-                    type="button"
-                    onClick={() => selectCategory("all")}
-                    className={`w-full rounded-xl px-2 py-2 text-left text-sm font-medium transition hover:bg-black/5 hover:text-zinc-950 ${
-                      activeCategory === "all"
-                        ? "bg-black/5 text-zinc-950"
-                        : "text-zinc-700"
-                    }`}
-                  >
-                    All items
-                  </button>
-                  {menu.map((c) => (
-                    <button
-                      type="button"
-                      key={c.slug}
-                      onClick={() => selectCategory(c.slug)}
-                      className={`w-full rounded-xl px-2 py-2 text-left text-sm font-medium transition hover:bg-black/5 hover:text-zinc-950 ${
-                        activeCategory === c.slug
-                          ? "bg-black/5 text-zinc-950"
-                          : "text-zinc-700"
-                      }`}
-                    >
-                      {c.name}
-                    </button>
-                  ))}
-                </nav>
-              </div>
-
+            <div className="sticky top-24 flex h-[calc(100vh-6.5rem)] flex-col gap-4">
               <div className="rounded-2xl border border-black/10 bg-white/70 p-4 shadow-sm backdrop-blur">
                 <div className="text-xs font-semibold text-zinc-500">
                   Filters
@@ -136,6 +103,39 @@ export default function MenuPage() {
                     Popular
                   </button>
                 </div>
+              </div>
+
+              <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-black/10 bg-white/70 p-4 shadow-sm backdrop-blur">
+                <div className="px-2 pb-2 text-xs font-semibold text-zinc-500">
+                  Categories
+                </div>
+                <nav className="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-gutter:stable] overscroll-contain">
+                  <button
+                    type="button"
+                    onClick={() => selectCategory("all")}
+                    className={`w-full rounded-xl px-2 py-2 text-left text-sm font-medium transition hover:bg-black/5 hover:text-zinc-950 ${
+                      activeCategory === "all"
+                        ? "bg-black/5 text-zinc-950"
+                        : "text-zinc-700"
+                    }`}
+                  >
+                    All items
+                  </button>
+                  {menu.map((c) => (
+                    <button
+                      type="button"
+                      key={c.slug}
+                      onClick={() => selectCategory(c.slug)}
+                      className={`w-full rounded-xl px-2 py-2 text-left text-sm font-medium transition hover:bg-black/5 hover:text-zinc-950 ${
+                        activeCategory === c.slug
+                          ? "bg-black/5 text-zinc-950"
+                          : "text-zinc-700"
+                      }`}
+                    >
+                      {c.name}
+                    </button>
+                  ))}
+                </nav>
               </div>
             </div>
           </aside>

@@ -7,6 +7,30 @@ import type { MenuCategory } from "@/data/menu";
 import { slugify } from "@/lib/slug";
 import { useMemo, useState } from "react";
 
+// Default to trying local `public/menu/...` assets first.
+// Set NEXT_PUBLIC_MENU_IMAGES=remote if you want to force Unsplash placeholders.
+const preferLocalMenuImages = process.env.NEXT_PUBLIC_MENU_IMAGES !== "remote";
+const localMenuImageExts = ["webp", "jpg", "png"] as const;
+const placeholderSrc = "https://images.unsplash.com/photo-1459755486867-b55449bb39ff?auto=format&fit=crop&w=1200&q=75";
+
+function shimmerDataUrl(w = 700, h = 450) {
+  const svg = `
+    <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g">
+          <stop stop-color="#f4f4f5" offset="20%"/>
+          <stop stop-color="#e4e4e7" offset="50%"/>
+          <stop stop-color="#f4f4f5" offset="70%"/>
+        </linearGradient>
+      </defs>
+      <rect width="${w}" height="${h}" fill="#f4f4f5"/>
+      <rect id="r" width="${w}" height="${h}" fill="url(#g)"/>
+      <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.15s" repeatCount="indefinite" />
+    </svg>
+  `;
+  return `data:image/svg+xml;base64,${typeof window === "undefined" ? Buffer.from(svg).toString("base64") : btoa(svg)}`;
+}
+
 function unsplash(src: string) {
   return `https://images.unsplash.com/${src}?auto=format&fit=crop&w=1200&q=75`;
 }
@@ -55,8 +79,14 @@ function itemImage(categorySlug: string, index: number) {
 }
 
 function localMenuImage(categorySlug: string, itemName: string) {
-  // Convention: public/menu/<category-slug>/<item-slug>.jpg
-  return `/menu/${categorySlug}/${slugify(itemName)}.jpg`;
+  // Convention: public/menu/<category-slug>/<item-slug>.<ext>
+  // Default to webp; we’ll retry other extensions on error.
+  return `/menu/${categorySlug}/${slugify(itemName)}.${localMenuImageExts[0]}`;
+}
+
+function localMenuImageCandidates(categorySlug: string, itemName: string) {
+  const base = `/menu/${categorySlug}/${slugify(itemName)}.`;
+  return localMenuImageExts.map((ext) => `${base}${ext}`);
 }
 
 export function MenuGrid({
@@ -70,6 +100,8 @@ export function MenuGrid({
   onlyFeatured: boolean;
   onlyPopular: boolean;
 }) {
+  const [srcOverrides, setSrcOverrides] = useState<Record<string, string>>({});
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
   const [activeItem, setActiveItem] = useState<{
     categoryName: string;
     categorySlug: string;
@@ -119,19 +151,33 @@ export function MenuGrid({
             </div>
 
             <div className="relative aspect-[16/10] overflow-hidden">
+              {!loaded[`${category.slug}:${item.name}`] ? (
+                <div className="absolute inset-0 animate-pulse bg-zinc-100" />
+              ) : null}
               <Image
-                src={localMenuImage(category.slug, item.name)}
+                src={
+                  srcOverrides[`${category.slug}:${item.name}`] ??
+                  (preferLocalMenuImages
+                    ? localMenuImage(category.slug, item.name)
+                    : placeholderSrc)
+                }
                 alt={item.name}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                 className="object-cover transition duration-500 group-hover:scale-[1.06]"
+                placeholder="blur"
+                blurDataURL={shimmerDataUrl(800, 500)}
+                onLoadingComplete={() => {
+                  const k = `${category.slug}:${item.name}`;
+                  setLoaded((prev) => (prev[k] ? prev : { ...prev, [k]: true }));
+                }}
                 onError={(e) => {
-                  // Fall back to a remote placeholder if local file isn't present.
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  const img = e.target as any;
-                  if (img?.src && String(img.src).includes("/menu/")) {
-                    img.src = itemImage(category.slug, idx);
-                  }
+                  const k = `${category.slug}:${item.name}`;
+                  const current = srcOverrides[k] ?? localMenuImage(category.slug, item.name);
+                  const candidates = localMenuImageCandidates(category.slug, item.name);
+                  const nextCandidate = candidates[candidates.indexOf(current) + 1];
+                  const next = nextCandidate ?? placeholderSrc;
+                  setSrcOverrides((prev) => (prev[k] === next ? prev : { ...prev, [k]: next }));
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
@@ -237,18 +283,33 @@ export function MenuGrid({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative aspect-[16/8]">
+                {!loaded[`${activeItem.categorySlug}:${activeItem.name}`] ? (
+                  <div className="absolute inset-0 animate-pulse bg-zinc-100" />
+                ) : null}
                 <Image
-                  src={localMenuImage(activeItem.categorySlug, activeItem.name)}
+                  src={
+                    srcOverrides[`${activeItem.categorySlug}:${activeItem.name}`] ??
+                    (preferLocalMenuImages
+                      ? localMenuImage(activeItem.categorySlug, activeItem.name)
+                      : placeholderSrc)
+                  }
                   alt={activeItem.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 768px"
                   className="object-cover"
+                  placeholder="blur"
+                  blurDataURL={shimmerDataUrl(900, 450)}
+                  onLoadingComplete={() => {
+                    const k = `${activeItem.categorySlug}:${activeItem.name}`;
+                    setLoaded((prev) => (prev[k] ? prev : { ...prev, [k]: true }));
+                  }}
                   onError={(e) => {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const img = e.target as any;
-                    if (img?.src && String(img.src).includes("/menu/")) {
-                      img.src = itemImage(activeItem.categorySlug, 0);
-                    }
+                    const k = `${activeItem.categorySlug}:${activeItem.name}`;
+                    const current = srcOverrides[k] ?? localMenuImage(activeItem.categorySlug, activeItem.name);
+                    const candidates = localMenuImageCandidates(activeItem.categorySlug, activeItem.name);
+                    const nextCandidate = candidates[candidates.indexOf(current) + 1];
+                    const next = nextCandidate ?? placeholderSrc;
+                    setSrcOverrides((prev) => (prev[k] === next ? prev : { ...prev, [k]: next }));
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
