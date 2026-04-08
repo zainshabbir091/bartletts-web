@@ -7,15 +7,18 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute inset-0">
-            {/* Premium placeholder hero image (replace later with café photo) */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/placeholder.svg"
-              alt=""
-              className="h-full w-full object-cover opacity-75"
-            />
-          </div>
+          {/* Static gradient background - warm coffee tones */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `
+                linear-gradient(135deg, #3D2314 0%, #5D3A1A 25%, #7B4B2A 50%, #5D3A1A 75%, #3D2314 100%),
+                radial-gradient(ellipse at 30% 20%, rgba(255,176,103,0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(255,138,61,0.2) 0%, transparent 50%)
+              `,
+            }}
+          />
+          {/* Coffee shop interior color overlay */}
           <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_20%_10%,rgba(245,158,11,0.22),transparent_55%),radial-gradient(900px_circle_at_80%_40%,rgba(59,130,246,0.10),transparent_55%)]" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black" />
         </div>
@@ -34,7 +37,7 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.14}>
               <p className="mt-5 max-w-2xl text-pretty text-base leading-7 text-white/70 sm:text-lg">
-                Bartlett’s Café is a cozy and elegant coffee spot located in
+                Bartlett&apos;s Café is a cozy and elegant coffee spot located in
                 Gulberg Greens. Perfect for coffee breaks, casual meetups, or
                 quiet relaxation.
               </p>
@@ -108,7 +111,7 @@ export default function Home() {
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-zinc-600">
                   From artisanal brews to signature lattes, plus pastries, cakes,
-                  sandwiches, and more—Bartlett’s is built for your everyday
+                  sandwiches, and more—Bartlett&apos;s is built for your everyday
                   rituals.
                 </p>
               </div>
