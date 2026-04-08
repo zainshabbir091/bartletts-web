@@ -2,85 +2,15 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { Reveal } from "@/components/reveal";
 import type { MenuCategory } from "@/data/menu";
 import { slugify } from "@/lib/slug";
 import { useMemo, useState } from "react";
+import { X } from "lucide-react";
 
-// Default to trying local `public/menu/...` assets first.
-// Set NEXT_PUBLIC_MENU_IMAGES=remote if you want to force Unsplash placeholders.
-const preferLocalMenuImages = process.env.NEXT_PUBLIC_MENU_IMAGES !== "remote";
 const localMenuImageExts = ["webp", "jpg", "png"] as const;
-const placeholderSrc = "https://images.unsplash.com/photo-1459755486867-b55449bb39ff?auto=format&fit=crop&w=1200&q=75";
-
-function shimmerDataUrl(w = 700, h = 450) {
-  const svg = `
-    <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="g">
-          <stop stop-color="#f4f4f5" offset="20%"/>
-          <stop stop-color="#e4e4e7" offset="50%"/>
-          <stop stop-color="#f4f4f5" offset="70%"/>
-        </linearGradient>
-      </defs>
-      <rect width="${w}" height="${h}" fill="#f4f4f5"/>
-      <rect id="r" width="${w}" height="${h}" fill="url(#g)"/>
-      <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.15s" repeatCount="indefinite" />
-    </svg>
-  `;
-  return `data:image/svg+xml;base64,${typeof window === "undefined" ? Buffer.from(svg).toString("base64") : btoa(svg)}`;
-}
-
-function unsplash(src: string) {
-  return `https://images.unsplash.com/${src}?auto=format&fit=crop&w=1200&q=75`;
-}
-
-function categoryImage(slug: string) {
-  switch (slug) {
-    case "artisanal-coffee":
-    case "classic-coffees":
-    case "signature-lattes":
-    case "flavoured-coffees":
-    case "cold-coffees":
-      return unsplash("photo-1442512595331-e89e73853f31");
-    case "hot-beverages-teas":
-      return unsplash("photo-1544787219-7f47ccb76574");
-    case "fruit-chillers-smoothies":
-      return unsplash("photo-1551024709-8f23befc6f87");
-    case "snowdrifts":
-      return unsplash("photo-1499636136210-6f4ee915583e");
-    case "cheesecakes-loaves":
-      return unsplash("photo-1464305795204-6f5bbfc7fb81");
-    case "classic-cakes":
-    case "sundaes-desserts-bakes":
-      return unsplash("photo-1486427944299-d1955d23e34d");
-    case "toasty-sandwiches":
-    case "paninis-sandwiches":
-    case "wraps-specialties":
-      return unsplash("photo-1528735602780-2552fd46c7af");
-    case "croissants-pastries":
-    case "donuts-rolls":
-      return unsplash("photo-1511379938547-c1f69419868d");
-    case "salads":
-      return unsplash("photo-1540189549336-e6e99c3679fe");
-    case "add-ons-water":
-      return unsplash("photo-1548839140-29a749e1cf4d");
-    default:
-      return unsplash("photo-1442512595331-e89e73853f31");
-  }
-}
-
-function itemImage(categorySlug: string, index: number) {
-  const sig = `${categorySlug}-${index}`;
-  const seed = Array.from(sig).reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  const w = 900 + (seed % 250);
-  const h = 700 + (seed % 250);
-  return `${categoryImage(categorySlug)}&w=${w}&h=${h}`;
-}
+const placeholderSrc = "/placeholder.svg";
 
 function localMenuImage(categorySlug: string, itemName: string) {
-  // Convention: public/menu/<category-slug>/<item-slug>.<ext>
-  // Default to webp; we’ll retry other extensions on error.
   return `/menu/${categorySlug}/${slugify(itemName)}.${localMenuImageExts[0]}`;
 }
 
@@ -88,6 +18,30 @@ function localMenuImageCandidates(categorySlug: string, itemName: string) {
   const base = `/menu/${categorySlug}/${slugify(itemName)}.`;
   return localMenuImageExts.map((ext) => `${base}${ext}`);
 }
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut" as const,
+    },
+  },
+};
 
 export function MenuGrid({
   category,
@@ -134,102 +88,108 @@ export function MenuGrid({
 
   return (
     <>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {items.map((item, idx) => (
-        <Reveal
-          key={`${category.slug}:${item.name}`}
-          delay={Math.min(0.25, idx * 0.03)}
-        >
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.05 }}
+        className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+      >
+        {items.map((item) => (
           <motion.div
-            whileHover={{ y: -4, scale: 1.01 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            className="group relative overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm ring-1 ring-transparent hover:shadow-md hover:ring-amber-200/70"
+            key={`${category.slug}:${item.name}`}
+            variants={itemVariants}
+            layout
           >
-            <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <div className="absolute -left-24 -top-24 h-52 w-52 rounded-full bg-amber-300/20 blur-2xl" />
-              <div className="absolute -bottom-28 -right-28 h-56 w-56 rounded-full bg-blue-300/15 blur-2xl" />
-            </div>
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="group relative overflow-hidden rounded-xl border border-zinc-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg"
+            >
+              {/* Image Container */}
+              <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100">
+                {!loaded[`${category.slug}:${item.name}`] && (
+                  <div className="absolute inset-0 animate-pulse bg-zinc-200" />
+                )}
+                <Image
+                  src={
+                    srcOverrides[`${category.slug}:${item.name}`] ??
+                    localMenuImage(category.slug, item.name)
+                  }
+                  alt={item.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                  onLoadingComplete={() => {
+                    const k = `${category.slug}:${item.name}`;
+                    setLoaded((prev) => (prev[k] ? prev : { ...prev, [k]: true }));
+                  }}
+                  onError={(e) => {
+                    const k = `${category.slug}:${item.name}`;
+                    const current = srcOverrides[k] ?? localMenuImage(category.slug, item.name);
+                    const candidates = localMenuImageCandidates(category.slug, item.name);
+                    const nextCandidate = candidates[candidates.indexOf(current) + 1];
+                    const next = nextCandidate ?? placeholderSrc;
+                    setSrcOverrides((prev) => (prev[k] === next ? prev : { ...prev, [k]: next }));
+                  }}
+                />
 
-            <div className="relative aspect-[16/10] overflow-hidden">
-              {!loaded[`${category.slug}:${item.name}`] ? (
-                <div className="absolute inset-0 animate-pulse bg-zinc-100" />
-              ) : null}
-              <Image
-                src={
-                  srcOverrides[`${category.slug}:${item.name}`] ??
-                  (preferLocalMenuImages
-                    ? localMenuImage(category.slug, item.name)
-                    : placeholderSrc)
-                }
-                alt={item.name}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                className="object-cover transition duration-500 group-hover:scale-[1.06]"
-                placeholder="blur"
-                blurDataURL={shimmerDataUrl(800, 500)}
-                onLoadingComplete={() => {
-                  const k = `${category.slug}:${item.name}`;
-                  setLoaded((prev) => (prev[k] ? prev : { ...prev, [k]: true }));
-                }}
-                onError={(e) => {
-                  const k = `${category.slug}:${item.name}`;
-                  const current = srcOverrides[k] ?? localMenuImage(category.slug, item.name);
-                  const candidates = localMenuImageCandidates(category.slug, item.name);
-                  const nextCandidate = candidates[candidates.indexOf(current) + 1];
-                  const next = nextCandidate ?? placeholderSrc;
-                  setSrcOverrides((prev) => (prev[k] === next ? prev : { ...prev, [k]: next }));
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                {/* Overlay Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="truncate text-sm font-semibold text-white">
-                    {item.name}
-                  </div>
-                  <div className="truncate text-xs text-white/75">
-                    {category.name}
-                  </div>
+                {/* Tags */}
+                <div className="absolute left-3 top-3 flex gap-2">
+                  {item.featured && (
+                    <span className="rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                      FEATURED
+                    </span>
+                  )}
+                  {item.popular && (
+                    <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                      POPULAR
+                    </span>
+                  )}
                 </div>
 
-                {typeof item.pricePkr === "number" ? (
-                  <div className="shrink-0 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-zinc-950">
-                    PKR {item.pricePkr.toLocaleString("en-PK")}
-                  </div>
-                ) : (
-                  <div className="shrink-0 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/90 backdrop-blur">
-                    Ask for price
+                {/* Price Badge */}
+                <div className="absolute bottom-3 right-3">
+                  {typeof item.pricePkr === "number" ? (
+                    <span className="rounded-lg bg-white/95 px-2.5 py-1 text-xs font-semibold text-zinc-900 shadow-sm">
+                      PKR {item.pricePkr.toLocaleString("en-PK")}
+                    </span>
+                  ) : (
+                    <span className="rounded-lg bg-black/30 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                      Ask for price
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-4">
+                <h4 className="font-medium text-zinc-900">{item.name}</h4>
+                {item.description && (
+                  <p className="mt-1 text-sm leading-relaxed text-zinc-500 line-clamp-2">
+                    {item.description}
+                  </p>
+                )}
+
+                {/* Tags Row */}
+                {item.tags && item.tags.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {item.tags.slice(0, 3).map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] text-zinc-600"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 )}
-              </div>
-            </div>
 
-            <div className="relative p-5">
-              {item.description ? (
-                <p className="text-sm leading-6 text-zinc-600">
-                  {item.description}
-                </p>
-              ) : (
-                <p className="text-sm leading-6 text-zinc-600">
-                  A Bartlett’s favorite—ask the team for today’s best pairing.
-                </p>
-              )}
-
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-semibold text-zinc-500">
-                  {item.featured ? (
-                    <span className="rounded-full bg-amber-50 px-2 py-1 text-amber-800">
-                      Featured
-                    </span>
-                  ) : null}
-                  {item.popular ? (
-                    <span className="rounded-full bg-zinc-100 px-2 py-1 text-zinc-700">
-                      Popular
-                    </span>
-                  ) : null}
-                </div>
+                {/* View Details Link */}
                 <button
-                  type="button"
                   onClick={() =>
                     setActiveItem({
                       categoryName: category.name,
@@ -243,29 +203,55 @@ export function MenuGrid({
                       popular: item.popular,
                     })
                   }
-                  className="relative overflow-hidden text-xs font-semibold text-amber-800 transition hover:text-amber-900"
+                  className="mt-4 text-xs font-medium text-amber-700 transition hover:text-amber-900"
                 >
-                  <span className="relative z-10">View details →</span>
-                  <span className="absolute inset-0 -translate-x-full bg-amber-200/40 transition-transform duration-300 group-hover:translate-x-0" />
+                  View details →
                 </button>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
-        </Reveal>
         ))}
-      </div>
+      </motion.div>
 
+      {/* Empty State */}
+      {items.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center justify-center py-16 text-center"
+        >
+          <div className="mb-4 rounded-full bg-zinc-100 p-4">
+            <svg
+              className="h-6 w-6 text-zinc-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-base font-medium text-zinc-900">No items found</h3>
+          <p className="mt-1 text-sm text-zinc-500">Try adjusting your filters</p>
+        </motion.div>
+      )}
+
+      {/* Detail Modal */}
       <AnimatePresence>
-        {activeItem ? (
+        {activeItem && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActiveItem(null)}
           >
             <motion.div
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -274,97 +260,88 @@ export function MenuGrid({
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-label={`${activeItem.name} details`}
-              className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-white shadow-xl"
-              initial={{ y: 24, opacity: 0, scale: 0.98 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 24, opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative aspect-[16/8]">
-                {!loaded[`${activeItem.categorySlug}:${activeItem.name}`] ? (
-                  <div className="absolute inset-0 animate-pulse bg-zinc-100" />
-                ) : null}
+              {/* Modal Image */}
+              <div className="relative aspect-[16/9]">
                 <Image
                   src={
                     srcOverrides[`${activeItem.categorySlug}:${activeItem.name}`] ??
-                    (preferLocalMenuImages
-                      ? localMenuImage(activeItem.categorySlug, activeItem.name)
-                      : placeholderSrc)
+                    localMenuImage(activeItem.categorySlug, activeItem.name)
                   }
                   alt={activeItem.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, 768px"
                   className="object-cover"
-                  placeholder="blur"
-                  blurDataURL={shimmerDataUrl(900, 450)}
-                  onLoadingComplete={() => {
-                    const k = `${activeItem.categorySlug}:${activeItem.name}`;
-                    setLoaded((prev) => (prev[k] ? prev : { ...prev, [k]: true }));
-                  }}
-                  onError={(e) => {
-                    const k = `${activeItem.categorySlug}:${activeItem.name}`;
-                    const current = srcOverrides[k] ?? localMenuImage(activeItem.categorySlug, activeItem.name);
-                    const candidates = localMenuImageCandidates(activeItem.categorySlug, activeItem.name);
-                    const nextCandidate = candidates[candidates.indexOf(current) + 1];
-                    const next = nextCandidate ?? placeholderSrc;
-                    setSrcOverrides((prev) => (prev[k] === next ? prev : { ...prev, [k]: next }));
-                  }}
+                  sizes="(max-width: 512px) 100vw, 512px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="truncate text-lg font-semibold text-white">
-                      {activeItem.name}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                {/* Close Button */}
+                <button
+                  onClick={() => setActiveItem(null)}
+                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-md transition hover:bg-black/40"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+
+                {/* Title Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <div className="flex items-end justify-between gap-4">
+                    <div>
+                      <p className="text-xs text-white/70">{activeItem.categoryName}</p>
+                      <h3 className="text-xl font-semibold text-white">{activeItem.name}</h3>
                     </div>
-                    <div className="truncate text-sm text-white/75">
-                      {activeItem.categoryName}
-                    </div>
+                    {typeof activeItem.pricePkr === "number" && (
+                      <span className="rounded-lg bg-white px-3 py-1 text-sm font-bold text-zinc-900">
+                        PKR {activeItem.pricePkr.toLocaleString("en-PK")}
+                      </span>
+                    )}
                   </div>
-                  {typeof activeItem.pricePkr === "number" ? (
-                    <div className="shrink-0 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-zinc-950">
-                      PKR {activeItem.pricePkr.toLocaleString("en-PK")}
-                    </div>
-                  ) : null}
                 </div>
               </div>
 
-              <div className="p-6">
-                {activeItem.tags?.length ? (
-                  <div className="flex flex-wrap gap-2">
-                    {activeItem.tags.map((t) => (
+              {/* Modal Content */}
+              <div className="p-5">
+                {activeItem.tags && activeItem.tags.length > 0 && (
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {activeItem.tags.map((tag) => (
                       <span
-                        key={t}
-                        className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-700"
+                        key={tag}
+                        className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs text-zinc-600"
                       >
-                        {t}
+                        {tag}
                       </span>
                     ))}
                   </div>
-                ) : null}
+                )}
 
-                <p className="mt-4 text-sm leading-6 text-zinc-700">
-                  {activeItem.details ?? activeItem.description ?? "Details coming soon."}
+                <p className="text-sm leading-relaxed text-zinc-600">
+                  {activeItem.details || activeItem.description || "Details coming soon."}
                 </p>
 
-                <div className="mt-6 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    {activeItem.featured ? (
-                      <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">
+                <div className="mt-5 flex items-center justify-between">
+                  <div className="flex gap-2">
+                    {activeItem.featured && (
+                      <span className="flex items-center gap-1 text-xs text-amber-600">
+                        <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
                         Featured
                       </span>
-                    ) : null}
-                    {activeItem.popular ? (
-                      <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-700">
+                    )}
+                    {activeItem.popular && (
+                      <span className="flex items-center gap-1 text-xs text-zinc-500">
+                        <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
                         Popular
                       </span>
-                    ) : null}
+                    )}
                   </div>
                   <button
-                    type="button"
                     onClick={() => setActiveItem(null)}
-                    className="inline-flex h-10 items-center justify-center rounded-full bg-zinc-950 px-4 text-sm font-semibold text-white transition hover:bg-zinc-900"
+                    className="rounded-lg bg-zinc-900 px-4 py-2 text-xs font-medium text-white transition hover:bg-zinc-800"
                   >
                     Close
                   </button>
@@ -372,9 +349,8 @@ export function MenuGrid({
               </div>
             </motion.div>
           </motion.div>
-        ) : null}
+        )}
       </AnimatePresence>
     </>
   );
 }
-

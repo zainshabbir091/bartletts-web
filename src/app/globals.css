@@ -36,3 +36,101 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Warm color theme variables */
+:root {
+  --mustard: #D4A015;
+  --orange: #E07B39;
+  --brown: #5C4033;
+  --cream: #FDF6E3;
+  --amber: #FFBF00;
+}
+
+/* Card spin animation */
+@keyframes cardSpinIn {
+  0% {
+    opacity: 0;
+    transform: rotateY(-90deg) translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0) translateX(0);
+  }
+}
+
+.card-spin-in {
+  animation: cardSpinIn 0.6s ease-out forwards;
+}
+
+/* Line clamp utility */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Gallery fade-in animation */
+@keyframes galleryFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-gallery-fade-in {
+  animation: galleryFadeIn 0.6s ease-out forwards;
+}
+
+/* Infinite scroll animations for gallery */
+@keyframes scrollDown {
+  0% {
+    transform: translateY(-33.33%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes scrollUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-33.33%);
+  }
+}
+
+.animate-scroll-down {
+  animation: scrollDown 30s linear infinite;
+}
+
+.animate-scroll-up {
+  animation: scrollUp 30s linear infinite;
+}
+
+/* Pause animations on hover */
+.animate-scroll-down:hover,
+.animate-scroll-up:hover {
+  animation-play-state: paused;
+}

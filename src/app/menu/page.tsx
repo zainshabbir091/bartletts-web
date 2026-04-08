@@ -1,235 +1,425 @@
 "use client";
-
 import { Container } from "@/components/container";
 import { menu } from "@/data/menu";
-import { Reveal } from "@/components/reveal";
-import { MenuGrid } from "@/components/menu/menu-grid";
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
+import Image from "next/image";
+import { Star, Flame, ArrowLeft } from "lucide-react";
 
+// ─── Category Images ───────────────────────────────────────────────────────────
+const categoryImages: Record<string, string> = {
+  "artisanal-coffee":         "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600&q=80",
+  "signature-lattes":         "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=600&q=80",
+  "flavoured-coffees":        "https://images.unsplash.com/photo-1572442388796-116cfb7b2e14?w=600&q=80",
+  "hot-beverages-teas":       "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80",
+  "classic-coffees":          "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80",
+  "cold-coffees":             "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=600&q=80",
+  "fruit-chillers-smoothies": "https://images.unsplash.com/photo-1623593688280-a5a64d394fb5?w=600&q=80",
+  "snowdrifts":               "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&q=80",
+  "cheesecakes-loaves":       "https://images.unsplash.com/photo-1524351199678-941a58a3df50?w=600&q=80",
+  "classic-cakes":            "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80",
+  "sundaes-desserts-bakes":   "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=80",
+  "toasty-sandwiches":        "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&q=80",
+  "paninis-sandwiches":       "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&q=80",
+  "wraps-specialties":        "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600&q=80",
+  "croissants-pastries":      "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&q=80",
+  "salads":                   "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  "donuts-rolls":             "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=600&q=80",
+  "add-ons-water":            "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&q=80",
+};
+
+// Fallback dish image per category slug keyword
+const getItemEmoji = (slug = "") => {
+  if (slug.includes("coffee") || slug.includes("latte")) return "☕";
+  if (slug.includes("cake") || slug.includes("cheesecake")) return "🍰";
+  if (slug.includes("sandwich") || slug.includes("panini")) return "🥪";
+  if (slug.includes("salad")) return "🥗";
+  if (slug.includes("donut")) return "🍩";
+  if (slug.includes("croissant")) return "🥐";
+  if (slug.includes("smoothie") || slug.includes("chiller")) return "🥤";
+  if (slug.includes("tea") || slug.includes("beverage")) return "🍵";
+  if (slug.includes("snowdrift")) return "🧊";
+  if (slug.includes("wrap")) return "🌯";
+  if (slug.includes("sundae") || slug.includes("dessert")) return "🍨";
+  return "🍽️";
+};
+
+// Stable deterministic rating/reviews from item name
+const stableRating  = (name: string) => (4 + ((name.charCodeAt(0) + name.length) % 10) / 10).toFixed(1);
+const stableReviews = (name: string) => 50 + ((name.charCodeAt(1) || 0) * 7 + name.length * 3) % 200;
+
+// ─── Component ─────────────────────────────────────────────────────────────────
 export default function MenuPage() {
-  const [query, setQuery] = useState("");
-  const [onlyFeatured, setOnlyFeatured] = useState(false);
-  const [onlyPopular, setOnlyPopular] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [switching, setSwitching] = useState(false);
+  const [view, setView]               = useState<"categories" | "items">("categories");
+  const [activeCategory, setActiveCategory] = useState<(typeof menu)[0] | null>(null);
 
-  const categories = useMemo(() => {
-    if (activeCategory === "all") return menu;
-    return menu.filter((c) => c.slug === activeCategory);
-  }, [activeCategory]);
+  // ── Hero / featured (first category, first item) ──────────────────────────
+  const heroCategory = menu[0];
+  const heroItem     = heroCategory?.items[0];
+  const heroRating   = heroItem ? stableRating(heroItem.name)  : "4.5";
+  const heroReviews  = heroItem ? stableReviews(heroItem.name) : 120;
 
-  function selectCategory(slug: string) {
-    setSwitching(true);
-    setActiveCategory(slug);
-    window.setTimeout(() => setSwitching(false), 350);
-    if (slug !== "all") {
-      const el = document.getElementById(slug);
-      el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }
+  // ── Open category ─────────────────────────────────────────────────────────
+  const openCategory = (cat: (typeof menu)[0]) => {
+    setActiveCategory(cat);
+    setView("items");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
+  // ─────────────────────────────────────────────────────────────────────────────
   return (
-    <div className="surface">
-      {/* Menu hero */}
-      <section className="relative overflow-hidden rounded-b-[2rem] border-b border-black/5 bg-zinc-950 text-white">
-        <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://images.unsplash.com/photo-1459755486867-b55449bb39ff?auto=format&fit=crop&w=2400&q=70"
-            alt=""
-            className="h-full w-full object-cover opacity-55"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/85" />
-        </div>
-        <Container className="relative py-14 sm:py-16">
-          <Reveal>
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold tracking-wide text-white/80">
-              Crafted daily • Premium coffee • Fresh bakes
-            </p>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <h1 className="mt-5 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-              Bartlett’s Menu
+    <div className="min-h-screen" style={{ background: "#0b0b0c", fontFamily: "'Georgia', serif" }}>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          HERO SECTION  (always visible)
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "48px 24px 0", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center", minHeight: 420 }}>
+          {/* Left: text */}
+          <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+              <span style={{ background: "#f59e0b", color: "#fff", borderRadius: 4, fontSize: 11, fontWeight: 700, padding: "2px 10px", letterSpacing: 2 }}>PRICE</span>
+              <span style={{ fontSize: 26, fontWeight: 900, color: "#f59e0b" }}>
+                {heroItem?.pricePkr ? `PKR ${heroItem.pricePkr}` : "Ask"}
+              </span>
+              <span style={{ fontSize: 13, color: "#a1a1aa" }}>/ item</span>
+            </div>
+
+            <h1 style={{ fontSize: "clamp(44px,6vw,80px)", fontWeight: 900, color: "#fafafa", lineHeight: 1.05, margin: "0 0 12px", fontFamily: "'Georgia', cursive" }}>
+              {heroItem?.name ?? "Signature Special"}
             </h1>
-          </Reveal>
-          <Reveal delay={0.14}>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">
-              Prices in PKR. Items may change based on availability.
+
+            {/* Stars */}
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16 }}>
+              {[1,2,3,4,5].map(s => (
+                <Star key={s} size={18}
+                  fill={s <= Math.round(+heroRating) ? "#f59e0b" : "none"}
+                  color={s <= Math.round(+heroRating) ? "#f59e0b" : "#52525b"}
+                />
+              ))}
+              <span style={{ fontWeight: 700, color: "#fafafa" }}>{heroRating}</span>
+              <span style={{ color: "#a1a1aa", fontSize: 13 }}>({heroReviews} reviews)</span>
+            </div>
+
+            <p style={{ color: "#a1a1aa", lineHeight: 1.7, maxWidth: 420, marginBottom: 28, fontSize: 15 }}>
+              {heroItem?.description ?? "Experience the finest blend of traditional recipes and premium ingredients, crafted to perfection in every bite."}
             </p>
-          </Reveal>
-        </Container>
+
+            <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+              <motion.button
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  document.getElementById("categories-section")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                style={{ background: "#f59e0b", color: "#0b0b0c", border: "none", borderRadius: 40, padding: "14px 32px", fontWeight: 700, fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 8px 24px rgba(245,158,11,0.35)" }}
+              >
+                View Menu
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  document.getElementById("categories-section")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                style={{ background: "transparent", color: "#fafafa", border: "2px solid #27272a", borderRadius: 40, padding: "14px 32px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}
+              >
+                Explore More
+              </motion.button>
+            </div>
+          </motion.div>
+
+          {/* Right: floating dish image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8, type: "spring" }}
+            style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
+            {/* blob bg */}
+            <div style={{
+              position: "absolute",
+              width: 380, height: 380,
+              background: "radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%)",
+              borderRadius: "50%", top: "50%", left: "50%",
+              transform: "translate(-50%,-50%)"
+            }}/>
+
+            {/* Decorative spice dots */}
+            {["top:10%,right:12%", "bottom:15%,left:10%", "top:55%,right:5%"].map((pos, i) => {
+              const [t, r, b, l] = pos.split(",").map(p => p.split(":")[1]);
+              return (
+                <div key={i} style={{
+                  position: "absolute",
+                  width: [48,32,24][i], height: [48,32,24][i],
+                  background: ["#f59e0b","#ea580c","#f59e0b"][i],
+                  borderRadius: "50%", opacity: [0.2,0.15,0.1][i],
+                  top: t, right: r, bottom: b, left: l
+                }}/>
+              );
+            })}
+
+            {/* Dish image */}
+            <motion.div
+              animate={{ y: [0, -12, 0] }}
+              transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
+              style={{ position: "relative", zIndex: 2 }}
+            >
+              <div style={{ width: 340, height: 340, borderRadius: "50%", overflow: "hidden", boxShadow: "0 32px 80px rgba(0,0,0,0.4)", border: "6px solid #27272a" }}>
+                <img
+                  src={categoryImages[heroCategory?.slug ?? ""] ?? "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80"}
+                  alt={heroItem?.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+            </motion.div>
+
+            {/* Price badge */}
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+              style={{
+                position: "absolute", top: 24, right: 40,
+                background: "#f59e0b", color: "#0b0b0c",
+                width: 90, height: 90, borderRadius: "50%",
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 8px 24px rgba(245,158,11,0.4)", zIndex: 3, textAlign: "center"
+              }}
+            >
+              <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.85, letterSpacing: 1 }}>PRICE</span>
+              <span style={{ fontSize: 16, fontWeight: 900 }}>
+                {heroItem?.pricePkr ? `${heroItem.pricePkr}` : "—"}
+              </span>
+              <span style={{ fontSize: 10, opacity: 0.8 }}>PKR</span>
+            </motion.div>
+          </motion.div>
+        </div>
       </section>
 
-      <div className="relative">
-        {/* Warm layered background + subtle blobs */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_20%_0%,rgba(245,158,11,0.20),transparent_55%),radial-gradient(900px_circle_at_80%_20%,rgba(120,113,108,0.14),transparent_55%)]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#fff7ed] via-white to-white" />
-          <div className="absolute left-10 top-20 h-64 w-64 rounded-full bg-amber-200/40 blur-3xl" />
-          <div className="absolute right-10 top-52 h-72 w-72 rounded-full bg-stone-200/50 blur-3xl" />
-          <div className="absolute inset-0 opacity-[0.06] [background-image:radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px]" />
-        </div>
+      {/* ══════════════════════════════════════════════════════════════════════
+          CATEGORIES / ITEMS SECTION
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section id="categories-section" style={{ padding: "60px 24px 80px", maxWidth: 1200, margin: "0 auto" }}>
 
-        <Container className="py-10">
-          <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-          <aside className="hidden lg:block">
-            <div className="sticky top-24 flex h-[calc(100vh-6.5rem)] flex-col gap-4">
-              <div className="rounded-2xl border border-black/10 bg-white/70 p-4 shadow-sm backdrop-blur">
-                <div className="text-xs font-semibold text-zinc-500">
-                  Filters
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setOnlyFeatured((v) => !v)}
-                    className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                      onlyFeatured
-                        ? "bg-amber-200 text-amber-950"
-                        : "bg-black/5 text-zinc-700 hover:bg-black/10"
-                    }`}
-                  >
-                    Featured
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setOnlyPopular((v) => !v)}
-                    className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                      onlyPopular
-                        ? "bg-zinc-200 text-zinc-900"
-                        : "bg-black/5 text-zinc-700 hover:bg-black/10"
-                    }`}
-                  >
-                    Popular
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-black/10 bg-white/70 p-4 shadow-sm backdrop-blur">
-                <div className="px-2 pb-2 text-xs font-semibold text-zinc-500">
-                  Categories
-                </div>
-                <nav className="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-gutter:stable] overscroll-contain">
-                  <button
-                    type="button"
-                    onClick={() => selectCategory("all")}
-                    className={`w-full rounded-xl px-2 py-2 text-left text-sm font-medium transition hover:bg-black/5 hover:text-zinc-950 ${
-                      activeCategory === "all"
-                        ? "bg-black/5 text-zinc-950"
-                        : "text-zinc-700"
-                    }`}
-                  >
-                    All items
-                  </button>
-                  {menu.map((c) => (
-                    <button
-                      type="button"
-                      key={c.slug}
-                      onClick={() => selectCategory(c.slug)}
-                      className={`w-full rounded-xl px-2 py-2 text-left text-sm font-medium transition hover:bg-black/5 hover:text-zinc-950 ${
-                        activeCategory === c.slug
-                          ? "bg-black/5 text-zinc-950"
-                          : "text-zinc-700"
-                      }`}
-                    >
-                      {c.name}
-                    </button>
-                  ))}
-                </nav>
-              </div>
-            </div>
-          </aside>
-
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-black/10 bg-white/70 p-4 shadow-sm backdrop-blur">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="text-sm font-semibold text-zinc-900">
-                  Browse menu
-                </div>
-                <div className="relative w-full sm:max-w-md">
-                  <input
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search coffee, croissant, cheesecake…"
-                    className="h-11 w-full rounded-full border border-black/10 bg-white px-4 text-sm text-zinc-950 shadow-sm outline-none transition focus:border-amber-300 focus:ring-4 focus:ring-amber-100"
-                  />
-                  {query ? (
-                    <button
-                      type="button"
-                      onClick={() => setQuery("")}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-zinc-700 hover:bg-black/10"
-                    >
-                      Clear
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${activeCategory}:${onlyFeatured}:${onlyPopular}:${switching ? "s" : "r"}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.22, ease: "easeOut" }}
-                className="space-y-10"
+        {/* Back button when viewing items */}
+        <AnimatePresence>
+          {view === "items" && activeCategory && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+              style={{ marginBottom: 32 }}
+            >
+              <button
+                onClick={() => setView("categories")}
+                style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", color: "#f59e0b", fontWeight: 700, fontSize: 15, cursor: "pointer" }}
               >
-                {categories.map((category) => (
-              <section
-                key={category.slug}
-                id={category.slug}
-                className="scroll-mt-24"
-              >
-                <Reveal>
-                  <div className="flex items-end justify-between gap-6">
-                    <div>
-                      <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-                        {category.name}
-                      </h2>
-                      {category.note ? (
-                        <p className="mt-2 text-sm text-zinc-600">
-                          {category.note}
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-                </Reveal>
+                <ArrowLeft size={18}/> Back to Categories
+              </button>
+              <h2 style={{ fontSize: "clamp(28px,4vw,48px)", fontWeight: 900, color: "#fafafa", margin: "12px 0 4px" }}>
+                {activeCategory.name}
+              </h2>
+              <p style={{ color: "#a1a1aa", fontSize: 14 }}>{activeCategory.note ?? "Fresh & handcrafted"}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-                {/* Skeleton shimmer while switching */}
-                {switching ? (
-                  <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm"
-                      >
-                        <div className="h-40 w-full animate-pulse bg-zinc-100" />
-                        <div className="space-y-2 p-5">
-                          <div className="h-4 w-2/3 animate-pulse rounded bg-zinc-100" />
-                          <div className="h-4 w-5/6 animate-pulse rounded bg-zinc-100" />
-                          <div className="h-4 w-1/2 animate-pulse rounded bg-zinc-100" />
-                        </div>
+        {/* Section header for categories view */}
+        {view === "categories" && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: "center", marginBottom: 48 }}>
+            <span style={{ background: "#f59e0b", color: "#0b0b0c", borderRadius: 4, fontSize: 11, fontWeight: 700, padding: "3px 14px", letterSpacing: 2, display: "inline-block", marginBottom: 12 }}>
+              OUR MENU
+            </span>
+            <h2 style={{ fontSize: "clamp(32px,4vw,52px)", fontWeight: 900, color: "#fafafa", margin: 0 }}>
+              Choose a Category
+            </h2>
+          </motion.div>
+        )}
+
+        {/* ── CATEGORY CARDS (Biryani-style with image floating above) ── */}
+        <AnimatePresence mode="wait">
+          {view === "categories" && (
+            <motion.div
+              key="categories"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 48 }}
+            >
+              {menu.map((cat, i) => {
+                const firstItem = cat.items[0];
+                const img = categoryImages[cat.slug] ?? "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80";
+                const accent = i % 3 === 0 ? "#f59e0b" : i % 3 === 1 ? "#ea580c" : "#f59e0b";
+                return (
+                  <motion.div
+                    key={cat.slug}
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.06, type: "spring", stiffness: 100 }}
+                    style={{ position: "relative", paddingTop: 64 }}
+                  >
+                    {/* Floating dish image */}
+                    <motion.div
+                      whileHover={{ y: -8, scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                      style={{
+                        position: "absolute",
+                        top: 0, left: "50%",
+                        transform: "translateX(-50%)",
+                        width: 130, height: 130,
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                        border: "5px solid #27272a",
+                        boxShadow: `0 16px 40px rgba(0,0,0,0.4), 0 0 0 2px ${accent}40`,
+                        zIndex: 2
+                      }}
+                    >
+                      <img src={img} alt={cat.name} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+                    </motion.div>
+
+                    {/* Card body */}
+                    <motion.div
+                      whileHover={{ y: -4, boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}
+                      style={{
+                        background: "#18181b",
+                        borderRadius: 24,
+                        padding: "80px 24px 28px",
+                        boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+                        textAlign: "center",
+                        cursor: "pointer",
+                        transition: "box-shadow 0.3s"
+                      }}
+                      onClick={() => openCategory(cat)}
+                    >
+                      {/* Price label */}
+                      <div style={{ fontSize: 11, color: "#71717a", fontWeight: 600, letterSpacing: 1, marginBottom: 2 }}>PRICE FROM</div>
+                      <div style={{ fontSize: 22, fontWeight: 900, color: accent, marginBottom: 8 }}>
+                        {firstItem?.pricePkr ? `PKR ${firstItem.pricePkr}` : "—"}
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <MenuGrid
-                    category={category}
-                    query={query}
-                    onlyFeatured={onlyFeatured}
-                    onlyPopular={onlyPopular}
-                  />
-                )}
-              </section>
-                ))}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-        </Container>
-      </div>
+
+                      {/* Category name (italic/cursive like reference) */}
+                      <div style={{ fontSize: 13, color: "#f59e0b", fontStyle: "italic", marginBottom: 2, fontFamily: "Georgia, serif" }}>
+                        {cat.name.split(" ")[0]}
+                      </div>
+                      <h3 style={{ fontSize: "clamp(18px,2.5vw,24px)", fontWeight: 900, color: "#fafafa", margin: "0 0 12px", lineHeight: 1.1 }}>
+                        {cat.name}
+                      </h3>
+
+                      {/* Stars */}
+                      <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 12 }}>
+                        {[1,2,3,4,5].map(s => (
+                          <Star key={s} size={14} fill={s <= 4 ? "#f59e0b" : "none"} color={s <= 4 ? "#f59e0b" : "#3f3f46"}/>
+                        ))}
+                      </div>
+
+                      {/* Mini description */}
+                      <p style={{ fontSize: 12, color: "#a1a1aa", lineHeight: 1.6, marginBottom: 20, minHeight: 52 }}>
+                        {cat.note ?? `${cat.items.length} items available. Crafted fresh daily with premium ingredients.`}
+                      </p>
+
+                      {/* CTA */}
+                      <button
+                        style={{
+                          background: accent, color: "#0b0b0c", border: "none",
+                          borderRadius: 40, padding: "10px 28px",
+                          fontWeight: 700, fontSize: 13, cursor: "pointer",
+                          transition: "opacity 0.2s"
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.opacity = "0.85")}
+                        onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+                      >
+                        Browse Menu
+                      </button>
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
+
+          {/* ── ITEM CARDS (same card style but denser) ── */}
+          {view === "items" && activeCategory && (
+            <motion.div
+              key="items"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 48 }}
+            >
+              {activeCategory.items.map((item, i) => {
+                const img = categoryImages[activeCategory.slug] ?? "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80";
+                const accent = i % 3 === 0 ? "#f59e0b" : i % 3 === 1 ? "#ea580c" : "#f59e0b";
+                const rating  = stableRating(item.name);
+                const reviews = stableReviews(item.name);
+                return (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05, type: "spring", stiffness: 100 }}
+                    style={{ position: "relative", paddingTop: 64 }}
+                  >
+                    {/* Floating dish image */}
+                    <motion.div
+                      whileHover={{ y: -8, scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                      style={{
+                        position: "absolute",
+                        top: 0, left: "50%",
+                        transform: "translateX(-50%)",
+                        width: 120, height: 120,
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                        border: "5px solid #27272a",
+                        boxShadow: `0 12px 32px rgba(0,0,0,0.4), 0 0 0 2px ${accent}40`,
+                        zIndex: 2
+                      }}
+                    >
+                      <img src={img} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+                    </motion.div>
+
+                    <motion.div
+                      whileHover={{ y: -4, boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}
+                      style={{
+                        background: "#18181b",
+                        borderRadius: 24,
+                        padding: "74px 20px 24px",
+                        boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+                        textAlign: "center",
+                        transition: "box-shadow 0.3s"
+                      }}
+                    >
+                      <div style={{ fontSize: 11, color: "#71717a", fontWeight: 600, letterSpacing: 1, marginBottom: 2 }}>PRICE</div>
+                      <div style={{ fontSize: 20, fontWeight: 900, color: accent, marginBottom: 6 }}>
+                        {item.pricePkr ? `PKR ${item.pricePkr}` : "Ask"}
+                      </div>
+
+                      <div style={{ fontSize: 12, color: "#f59e0b", fontStyle: "italic", marginBottom: 2, fontFamily: "Georgia, serif" }}>
+                        {activeCategory.name}
+                      </div>
+                      <h3 style={{ fontSize: 18, fontWeight: 900, color: "#fafafa", margin: "0 0 8px", lineHeight: 1.15 }}>
+                        {item.name}
+                      </h3>
+
+                      {/* Stars */}
+                      <div style={{ display: "flex", justifyContent: "center", gap: 2, marginBottom: 10 }}>
+                        {[1,2,3,4,5].map(s => (
+                          <Star key={s} size={13} fill={s <= Math.round(+rating) ? "#f59e0b" : "none"} color={s <= Math.round(+rating) ? "#f59e0b" : "#3f3f46"}/>
+                        ))}
+                        <span style={{ fontSize: 12, color: "#71717a", marginLeft: 4 }}>{rating} ({reviews})</span>
+                      </div>
+
+                      <p style={{ fontSize: 12, color: "#a1a1aa", lineHeight: 1.6, marginBottom: 16, minHeight: 44 }}>
+                        {item.description ?? "Crafted with care using the finest seasonal ingredients."}
+                      </p>
+
+                      {/* Popular badge */}
+                      {(item as any).popular && (
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#ea580c", color: "#fff", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, marginBottom: 12 }}>
+                          <Flame size={11}/> Popular
+                        </div>
+                      )}
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </section>
     </div>
   );
 }
-

@@ -11,7 +11,7 @@ export default function Home() {
             {/* Premium placeholder hero image (replace later with café photo) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=2400&q=70"
+              src="/placeholder.svg"
               alt=""
               className="h-full w-full object-cover opacity-75"
             />
