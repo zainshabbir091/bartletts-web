@@ -3,7 +3,7 @@ import { Container } from "@/components/container";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-zinc-800 bg-zinc-950">
+    <footer className="border-t border-teal-800 bg-teal-900">
       {/* Main Footer Content */}
       <Container className="py-12 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-12">
@@ -30,7 +30,7 @@ export function SiteFooter() {
               </span>
             </div>
 
-            <p className="mt-4 max-w-sm text-sm leading-6 text-zinc-400">
+            <p className="mt-4 max-w-sm text-sm leading-6 text-teal-100/80">
               Cozy and elegant coffee spot in Gulberg Greens, Islamabad—premium
               coffee, freshly prepared food, and a calm ambiance.
             </p>
@@ -66,7 +66,7 @@ export function SiteFooter() {
                 <a
                   key={social.name}
                   href="#"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-zinc-700 hover:bg-zinc-800 hover:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-teal-700 bg-teal-800 text-teal-200 transition hover:border-teal-600 hover:bg-teal-700 hover:text-white"
                   aria-label={social.name}
                 >
                   {social.icon}
@@ -102,12 +102,12 @@ export function SiteFooter() {
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <div className="text-sm text-zinc-400">
+                    <div className="text-sm text-teal-100/80">
                       <p>Gulberg Arena Mall</p>
-                      <p className="text-xs text-zinc-500">
+                      <p className="text-xs text-teal-200/60">
                         J558+4P5, Gulberg Expy
                       </p>
-                      <p className="text-xs text-zinc-500">
+                      <p className="text-xs text-teal-200/60">
                         Gulberg Greens Block A
                       </p>
                     </div>
@@ -128,7 +128,7 @@ export function SiteFooter() {
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span className="flex items-center gap-1.5 text-sm text-zinc-400">
+                    <span className="flex items-center gap-1.5 text-sm text-teal-100/80">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                       Open 24 hours
                     </span>
@@ -137,7 +137,7 @@ export function SiteFooter() {
                 <li>
                   <a
                     href="tel:03293399440"
-                    className="flex items-center gap-3 text-sm text-zinc-400 transition hover:text-amber-400"
+                    className="flex items-center gap-3 text-sm text-teal-100/80 transition hover:text-amber-400"
                   >
                     <svg
                       className="h-4 w-4 shrink-0 text-amber-500"
@@ -171,9 +171,9 @@ export function SiteFooter() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="group flex items-center gap-2 text-sm text-zinc-400 transition hover:text-white"
+                      className="group flex items-center gap-2 text-sm text-teal-100/80 transition hover:text-white"
                     >
-                      <span className="h-1 w-1 rounded-full bg-zinc-600 transition group-hover:bg-amber-500"></span>
+                      <span className="h-1 w-1 rounded-full bg-teal-400 transition group-hover:bg-amber-500"></span>
                       {link.name}
                     </Link>
                   </li>
@@ -185,7 +185,7 @@ export function SiteFooter() {
             <div className="col-span-2 sm:col-span-1">
               <h3 className="text-sm font-semibold text-white">At a Glance</h3>
               <div className="mt-4 space-y-3">
-                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-3">
+                <div className="rounded-xl border border-teal-800 bg-teal-800/50 p-3">
                   <div className="flex items-center gap-2">
                     <svg
                       className="h-4 w-4 text-amber-400"
@@ -196,12 +196,12 @@ export function SiteFooter() {
                     </svg>
                     <span className="text-lg font-bold text-white">4.8</span>
                   </div>
-                  <p className="mt-1 text-xs text-zinc-500">838 reviews</p>
+                  <p className="mt-1 text-xs text-teal-200/60">838 reviews</p>
                 </div>
 
-                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-3">
+                <div className="rounded-xl border border-teal-800 bg-teal-800/50 p-3">
                   <div className="text-lg font-bold text-white">Rs 1k–2k</div>
-                  <p className="mt-1 text-xs text-zinc-500">per person</p>
+                  <p className="mt-1 text-xs text-teal-200/60">per person</p>
                 </div>
               </div>
             </div>
@@ -210,21 +210,21 @@ export function SiteFooter() {
       </Container>
 
       {/* Bottom Bar */}
-      <div className="border-t border-zinc-900">
+      <div className="border-t border-teal-950">
         <Container className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-teal-200/60">
             © {new Date().getFullYear()} Bartlett&apos;s Café. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link
               href="#"
-              className="text-xs text-zinc-500 transition hover:text-zinc-300"
+              className="text-xs text-teal-200/60 transition hover:text-white"
             >
               Privacy Policy
             </Link>
             <Link
               href="#"
-              className="text-xs text-zinc-500 transition hover:text-zinc-300"
+              className="text-xs text-teal-200/60 transition hover:text-white"
             >
               Terms of Service
             </Link>
