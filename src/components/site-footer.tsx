@@ -5,8 +5,8 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-teal-800 bg-teal-900">
       {/* Main Footer Content */}
-      <Container className="py-12 lg:py-16">
-        <div className="grid gap-10 lg:grid-cols-12">
+      <Container className="py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-10 grid-cols-1 lg:grid-cols-12">
           {/* Brand Section */}
           <div className="lg:col-span-5">
             <div className="flex items-center gap-2">
@@ -75,8 +75,8 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {/* Quick Links & Contact */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7">
+          {/* Quick Links & Contact - stacked on mobile, row on sm+ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:col-span-7">
             {/* Visit Info */}
             <div>
               <h3 className="text-sm font-semibold text-white">Visit</h3>
@@ -182,9 +182,9 @@ export function SiteFooter() {
             </div>
 
             {/* Stats */}
-            <div className="col-span-2 sm:col-span-1">
+            <div>
               <h3 className="text-sm font-semibold text-white">At a Glance</h3>
-              <div className="mt-4 space-y-3">
+              <div className="mt-4 grid grid-cols-2 gap-3">
                 <div className="rounded-xl border border-teal-800 bg-teal-800/50 p-3">
                   <div className="flex items-center gap-2">
                     <svg
@@ -211,7 +211,7 @@ export function SiteFooter() {
 
       {/* Bottom Bar */}
       <div className="border-t border-teal-950">
-        <Container className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
+        <Container className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row px-4 sm:px-6 lg:px-8">
           <p className="text-xs text-teal-200/60">
             © {new Date().getFullYear()} Bartlett&apos;s Café. All rights reserved.
           </p>

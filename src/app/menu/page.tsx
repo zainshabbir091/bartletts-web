@@ -71,10 +71,69 @@ export default function MenuPage() {
     <div className="min-h-screen" style={{ background: "#0b0b0c", fontFamily: "'Georgia', serif" }}>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          HERO SECTION  (always visible)
+          MOBILE HERO SECTION (mobile only)
       ══════════════════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "48px 24px 0", maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center", minHeight: 420 }}>
+      <section className="sm:hidden" style={{ padding: "32px 16px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {/* Left: text */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
+              <span style={{ background: "#f59e0b", color: "#fff", borderRadius: 4, fontSize: 11, fontWeight: 700, padding: "2px 10px", letterSpacing: 2 }}>PRICE</span>
+              <span style={{ fontSize: 24, fontWeight: 900, color: "#f59e0b" }}>
+                {heroItem?.pricePkr ? `PKR ${heroItem.pricePkr}` : "Ask"}
+              </span>
+              <span style={{ fontSize: 12, color: "#a1a1aa" }}>/ item</span>
+            </div>
+
+            <h1 style={{ fontSize: 36, fontWeight: 900, color: "#fafafa", lineHeight: 1.2, margin: "0 0 12px", fontFamily: "'Georgia', cursive" }}>
+              {heroItem?.name ?? "Signature Special"}
+            </h1>
+
+            {/* Stars */}
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16 }}>
+              {[1,2,3,4,5].map(s => (
+                <Star key={s} size={16}
+                  fill={s <= Math.round(+heroRating) ? "#f59e0b" : "none"}
+                  color={s <= Math.round(+heroRating) ? "#f59e0b" : "#52525b"}
+                />
+              ))}
+              <span style={{ fontWeight: 700, color: "#fafafa" }}>{heroRating}</span>
+              <span style={{ color: "#a1a1aa", fontSize: 12 }}>({heroReviews})</span>
+            </div>
+
+            <p style={{ color: "#a1a1aa", lineHeight: 1.6, marginBottom: 20, fontSize: 14 }}>
+              {heroItem?.description ?? "Experience the finest blend of traditional recipes and premium ingredients, crafted to perfection in every bite."}
+            </p>
+
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <motion.button
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  document.getElementById("categories-section")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                style={{ background: "#f59e0b", color: "#0b0b0c", border: "none", borderRadius: 40, padding: "12px 24px", fontWeight: 700, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, boxShadow: "0 8px 24px rgba(245,158,11,0.35)" }}
+              >
+                View Menu
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  document.getElementById("categories-section")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                style={{ background: "transparent", color: "#fafafa", border: "2px solid #27272a", borderRadius: 40, padding: "12px 24px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+              >
+                Explore More
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          DESKTOP HERO SECTION (desktop only)
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="hidden sm:block" style={{ padding: "48px 24px 0", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center", minHeight: "420px" }}>
           {/* Left: text */}
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
@@ -198,7 +257,7 @@ export default function MenuPage() {
       {/* ══════════════════════════════════════════════════════════════════════
           CATEGORIES / ITEMS SECTION
       ══════════════════════════════════════════════════════════════════════ */}
-      <section id="categories-section" style={{ padding: "60px 24px 80px", maxWidth: 1200, margin: "0 auto" }}>
+      <section id="categories-section" style={{ padding: "40px 16px 60px", maxWidth: 1200, margin: "0 auto" }}>
 
         {/* Back button when viewing items */}
         <AnimatePresence>
@@ -239,7 +298,8 @@ export default function MenuPage() {
             <motion.div
               key="categories"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 48 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12"
+              style={{ display: "grid", gap: "32px" }}
             >
               {menu.map((cat, i) => {
                 const firstItem = cat.items[0];
@@ -337,7 +397,8 @@ export default function MenuPage() {
             <motion.div
               key="items"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 48 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12"
+              style={{ display: "grid", gap: "32px" }}
             >
               {activeCategory.items.map((item, i) => {
                 const img = categoryImages[activeCategory.slug] ?? "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80";

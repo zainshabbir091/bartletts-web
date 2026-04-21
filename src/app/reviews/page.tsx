@@ -134,7 +134,7 @@ export default function ReviewsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
       {/* Hero Section */}
-      <section className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section className="relative overflow-hidden px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_-20%,rgba(245,158,11,0.15),transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(800px_circle_at_80%_60%,rgba(59,130,246,0.08),transparent_55%)]" />
@@ -149,13 +149,13 @@ export default function ReviewsPage() {
             </Reveal>
 
             <Reveal delay={0.08}>
-              <h1 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h1 className="mt-6 text-3xl sm:text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 What our guests say
               </h1>
             </Reveal>
 
             <Reveal delay={0.14}>
-              <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-zinc-400">
+              <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base leading-7 text-zinc-400">
                 Discover why coffee lovers choose Bartlett&apos;s Café. Real reviews
                 from real guests who have experienced our premium coffee and cozy
                 ambiance.
@@ -164,7 +164,7 @@ export default function ReviewsPage() {
 
             {/* Stats Cards */}
             <Reveal delay={0.2}>
-              <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
                   <div className="flex items-center justify-center gap-1">
                     <span className="text-2xl font-bold text-white">
@@ -203,9 +203,9 @@ export default function ReviewsPage() {
       </section>
 
       {/* Reviews Grid */}
-      <section className="px-4 pb-20 sm:px-6 lg:px-8">
+      <section className="px-4 pb-12 sm:px-6 lg:px-8">
         <Container>
-          <div className="grid gap-6 lg:grid-cols-12">
+          <div className="grid gap-6 grid-cols-1 lg:grid-cols-12">
             {/* Reviews List */}
             <div className="lg:col-span-8">
               <div className="mb-6 flex items-center justify-between">
@@ -290,7 +290,7 @@ export default function ReviewsPage() {
 
             {/* Add Review Card */}
             <div className="lg:col-span-4">
-              <div className="sticky top-6">
+              <div className="lg:sticky lg:top-6">
                 <Reveal delay={0.1}>
                   <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 to-zinc-950">
                     <div className="border-b border-zinc-800 bg-zinc-900/50 p-6">

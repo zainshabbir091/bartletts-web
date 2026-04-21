@@ -73,7 +73,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
       {/* Hero Section */}
-      <section className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section className="relative overflow-hidden px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_-20%,rgba(245,158,11,0.15),transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(800px_circle_at_80%_60%,rgba(59,130,246,0.08),transparent_55%)]" />
@@ -88,13 +88,13 @@ export default function ContactPage() {
             </Reveal>
 
             <Reveal delay={0.08}>
-              <h1 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h1 className="mt-6 text-3xl sm:text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Contact & Location
               </h1>
             </Reveal>
 
             <Reveal delay={0.14}>
-              <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-zinc-400">
+              <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base leading-7 text-zinc-400">
                 Visit us at Gulberg Arena Mall in Gulberg Greens, Islamabad. Open 24 hours for your coffee cravings.
               </p>
             </Reveal>
@@ -105,7 +105,7 @@ export default function ContactPage() {
       {/* Contact Cards */}
       <section className="px-4 pb-10 sm:px-6 lg:px-8">
         <Container>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {contactCards.map((card, idx) => (
               <Reveal key={card.title} delay={0.05 * idx}>
                 <div className="group rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 transition hover:border-zinc-700 hover:bg-zinc-900/60">
@@ -139,9 +139,9 @@ export default function ContactPage() {
       </section>
 
       {/* Map & Contact Form */}
-      <section className="px-4 pb-20 sm:px-6 lg:px-8">
+      <section className="px-4 pb-12 sm:px-6 lg:px-8">
         <Container>
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
             {/* Map */}
             <Reveal delay={0.1}>
               <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
@@ -154,7 +154,7 @@ export default function ContactPage() {
                     Find Us on the Map
                   </h2>
                 </div>
-                <div className="relative aspect-[4/3] w-full lg:aspect-auto lg:h-[500px]">
+                <div className="relative aspect-[4/3] w-full sm:aspect-[2/1] lg:aspect-auto lg:h-[500px]">
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3320.9!2d73.103!3d33.668!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfdfdbbdc64f6b%3A0xabdd9cf6d6c8f90b!2sGulberg%20Arena!5e0!3m2!1sen!2s!4v1704501234567!5m2!1sen!2s&q=33.668,73.103&zoom=17"
                     width="100%"

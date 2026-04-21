@@ -16,6 +16,10 @@ export default function GalleryPage() {
     "small",
     "tall",
     "medium",
+    "small",
+    "tall",
+    "medium",
+    "small",
   ];
 
   const images: GalleryImageWithSize[] = rawImages.map((img, i) => ({
@@ -32,16 +36,23 @@ export default function GalleryPage() {
     tall: "h-80",
   };
 
+  // Height mapping for masonry images (mobile)
+  const masonryHeights = {
+    small: 160,
+    medium: 256,
+    tall: 320,
+  };
+
   return (
     <div className="surface min-h-screen">
-      {/* Hero Section with split layout - Full Width */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[50vh] overflow-hidden">
+      {/* Hero Section */}
+      <div className="lg:grid lg:grid-cols-2 min-h-[50vh] overflow-hidden">
           {/* Left Side - Title Section */}
-          <div className="flex flex-col justify-center px-8 lg:px-16 py-8 ">
-            <h1 className="text-5xl lg:text-7xl font-serif italic tracking-tight">
+          <div className="flex flex-col justify-center px-4 sm:px-8 lg:px-16 py-8">
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-serif italic tracking-tight">
               Gallery
             </h1>
-            <p className="mt-6 text-lg leading-relaxed text-zinc-600 max-w-md">
+            <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-zinc-600 max-w-md">
               More than just a café, Bartlett's is a place where moments are
               captured, memories are made, and every cup tells a story.
             </p>
@@ -68,9 +79,9 @@ export default function GalleryPage() {
             </div>
           </div>
 
-          {/* Right Side - Scrolling Image Grid */}
-          <div className="relative overflow-hidden bg-zinc-900 h-full">
-            <div className="absolute inset-0 flex justify-center gap-3 p-3">  
+          {/* Right Side - Scrolling Image Grid - hidden on mobile, shown on lg+ */}
+          <div className="hidden lg:block relative overflow-hidden bg-zinc-900 h-full">
+            <div className="absolute inset-0 flex justify-center gap-3 p-3">
               {/* Column 1 - Scroll Down */}
               <div className="flex flex-col gap-3 animate-scroll-down">
                 {scrollImages.filter((_, i) => i % 3 === 0).map((img, index) => (
@@ -140,14 +151,40 @@ export default function GalleryPage() {
           </div>
         </div>
 
-        {/* Full Gallery Grid Section */}
+        {/* Full Gallery Grid Section - Masonry Layout */}
         <Container>
           {images.length > 0 && (
-          <div className="py-24">
-            <h2 className="text-2xl font-semibold text-center mb-12">
+          <div className="py-12 sm:py-24">
+            <h2 className="text-xl sm:text-2xl font-semibold text-center mb-8 sm:mb-12">
               All Moments
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[200px]">
+
+            {/* Mobile: True masonry with CSS columns (2 columns, staggered) */}
+            <div className="lg:hidden columns-2 gap-3">
+              {images.map((img, index) => (
+                <div
+                  key={img.src}
+                  className={`
+                    break-inside-avoid mb-3
+                    group relative overflow-hidden rounded-2xl
+                    bg-gradient-to-br from-zinc-800 to-zinc-700
+                    shadow-md
+                  `}
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    width={180}
+                    height={masonryHeights[img.size]}
+                    sizes="(max-width: 768px) 50vw"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Tablet/Desktop: Original grid layout preserved */}
+            <div className="hidden lg:grid grid-cols-4 gap-4 auto-rows-[200px]">
               {images.map((img, index) => (
                 <div
                   key={img.src}
@@ -156,17 +193,17 @@ export default function GalleryPage() {
                     bg-gradient-to-br from-zinc-100 to-zinc-200
                     shadow-md transition-all duration-500 ease-out
                     hover:shadow-2xl hover:shadow-amber-500/20
+                    ${img.size === "tall" ? "row-span-2" : ""}
                   `}
                   style={{
-                    gridColumn: img.size === "large" ? "span 2" : "span 1",
-                    gridRow: img.size === "tall" ? "span 2" : "span 1",
+                    gridRow: img.size === "tall" ? "span 2" : "auto",
                   }}
                 >
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
+                    sizes="(max-width: 1200px) 25vw, 20vw"
                     className="
                       object-cover transition-transform duration-700 ease-out
                       group-hover:scale-110

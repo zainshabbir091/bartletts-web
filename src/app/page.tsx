@@ -34,7 +34,7 @@ function AnimatedHeading({
             transition={{
               duration: 0.8,
               delay: delay + i * 0.06,
-              ease: [0.22, 1, 0.36, 1],
+              ease: [0.22, 1, 0.36, 1] as const,
             }}
             style={{ transformOrigin: "center bottom" }}
           >
@@ -73,7 +73,7 @@ function FadeUpBlur({
       transition={{
         duration: 0.7,
         delay,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1] as const,
       }}
     >
       {children}
@@ -107,7 +107,7 @@ function ScaleFade({
       transition={{
         duration: 0.5,
         delay,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1] as const,
       }}
     >
       {children}
@@ -144,7 +144,7 @@ function StaggerCards({
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1] as const,
       },
     },
   };
@@ -189,29 +189,29 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/30" />
         </div>
 
-        <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+        <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="max-w-3xl">
             {/* Badge - scales in */}
             <ScaleFade delay={0.1}>
-              <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wide text-white backdrop-blur-sm">
+              <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wide text-white backdrop-blur-sm">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
                 Gulberg Greens • Islamabad • Open 24 hours
               </p>
             </ScaleFade>
 
             {/* Main heading - word by word reveal */}
-            <div className="mt-8">
+            <div className="mt-6">
               <AnimatedHeading
                 delay={0.2}
-                className="text-balance text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl"
+                className="text-balance text-3xl sm:text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl"
               >
                 Premium coffee, calm ambiance, and food made fresh.
               </AnimatedHeading>
             </div>
 
             {/* Subtitle - fade up with blur */}
-            <FadeUpBlur delay={0.8} className="mt-6">
-              <p className="max-w-2xl text-pretty text-base leading-7 text-white/80 sm:text-lg">
+            <FadeUpBlur delay={0.8} className="mt-4">
+              <p className="max-w-2xl text-pretty text-sm sm:text-base leading-7 text-white/80 sm:text-lg">
                 Bartlett&apos;s Café is a cozy and elegant coffee spot located in
                 Gulberg Greens. Perfect for coffee breaks, casual meetups, or
                 quiet relaxation.
@@ -219,17 +219,17 @@ export default function Home() {
             </FadeUpBlur>
 
             {/* CTA Buttons - staggered fade up */}
-            <FadeUpBlur delay={1} className="mt-8">
+            <FadeUpBlur delay={1} className="mt-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <motion.a
                   href="/menu"
-                  className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-zinc-950 shadow-lg transition hover:bg-white/90 hover:shadow-xl"
+                  className="group inline-flex h-10 sm:h-12 items-center justify-center gap-2 rounded-full bg-white px-5 sm:px-6 text-xs sm:text-sm font-semibold text-zinc-950 shadow-lg transition hover:bg-white/90 hover:shadow-xl"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   Explore the Menu
                   <svg
-                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                    className="h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-0.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -244,7 +244,7 @@ export default function Home() {
                 </motion.a>
                 <motion.a
                   href="/contact"
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="inline-flex h-10 sm:h-12 items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 sm:px-6 text-xs sm:text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -256,30 +256,30 @@ export default function Home() {
             {/* Info cards - staggered reveal */}
             <StaggerCards delay={1.2}>
               <>
-                <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm transition hover:bg-white/15">
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-3 sm:p-4 backdrop-blur-sm transition hover:bg-white/15">
                   <dt className="text-xs font-medium text-white/70">Rating</dt>
-                  <dd className="mt-1 text-xl font-semibold text-white">4.8</dd>
+                  <dd className="mt-1 text-lg sm:text-xl font-semibold text-white">4.8</dd>
                   <dd className="text-xs text-white/60">838 reviews</dd>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm transition hover:bg-white/15">
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-3 sm:p-4 backdrop-blur-sm transition hover:bg-white/15">
                   <dt className="text-xs font-medium text-white/70">Price</dt>
-                  <dd className="mt-1 text-xl font-semibold text-white">
+                  <dd className="mt-1 text-lg sm:text-xl font-semibold text-white">
                     Rs 1k–2k
                   </dd>
                   <dd className="text-xs text-white/60">per person</dd>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm transition hover:bg-white/15">
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-3 sm:p-4 backdrop-blur-sm transition hover:bg-white/15">
                   <dt className="text-xs font-medium text-white/70">Phone</dt>
-                  <dd className="mt-1 text-xl font-semibold text-white">
+                  <dd className="mt-1 text-lg sm:text-xl font-semibold text-white">
                     0329 3399440
                   </dd>
                   <dd className="text-xs text-white/60">call for info</dd>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm transition hover:bg-white/15">
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-3 sm:p-4 backdrop-blur-sm transition hover:bg-white/15">
                   <dt className="text-xs font-medium text-white/70">
                     Location
                   </dt>
-                  <dd className="mt-1 text-xl font-semibold text-white">
+                  <dd className="mt-1 text-lg sm:text-xl font-semibold text-white">
                     Gulberg Greens
                   </dd>
                   <dd className="text-xs text-white/60">Block A</dd>
@@ -296,20 +296,20 @@ export default function Home() {
 
       {/* Highlights */}
       <section id="highlights" className="bg-stone-50">
-        <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="mb-16 flex items-end justify-between gap-6">
+          <div className="mb-10 sm:mb-16 flex flex-col sm:items-end justify-between gap-4 sm:gap-6">
             <div className="max-w-2xl">
               <Reveal>
                 <p className="text-sm font-medium text-amber-700">Our Specialties</p>
               </Reveal>
               <Reveal delay={0.1}>
-                <h2 className="mt-2 text-balance text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
+                <h2 className="mt-2 text-balance text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
                   Crafted for coffee lovers
                 </h2>
               </Reveal>
               <Reveal delay={0.15}>
-                <p className="mt-4 text-base leading-7 text-zinc-600">
+                <p className="mt-4 text-sm sm:text-base leading-7 text-zinc-600">
                   From artisanal brews to signature lattes, plus pastries, cakes,
                   sandwiches, and more—Bartlett&apos;s is built for your everyday
                   rituals.
@@ -329,7 +329,7 @@ export default function Home() {
           </div>
 
           {/* Feature Rows */}
-          <div className="space-y-20 lg:space-y-32">
+          <div className="space-y-12 sm:space-y-16 lg:space-y-20">
             {/* Artisanal Coffee - Image on Left, slides from RIGHT to LEFT */}
             <FeatureRow
               image="/coffe-ezgif.com-webp-to-jpg-converter.jpg"
@@ -439,7 +439,7 @@ function FeatureRow({
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1] as const,
       },
     },
   };
@@ -461,9 +461,9 @@ function FeatureRow({
       initial="hidden"
       animate={isInView ? "show" : "hidden"}
     >
-      {/* Image */}
+      {/* Image - hidden on mobile, shown on lg+ */}
       <motion.div
-        className={`relative overflow-hidden rounded-2xl ${
+        className={`hidden lg:block relative overflow-hidden rounded-2xl ${
           imagePosition === "right" ? "lg:order-2" : "lg:order-1"
         }`}
         initial={{ opacity: 0, x: imageInitialX }}
@@ -473,7 +473,7 @@ function FeatureRow({
         transition={{
           duration: 0.8,
           delay: delay,
-          ease: [0.22, 1, 0.36, 1],
+          ease: [0.22, 1, 0.36, 1] as const,
         }}
       >
         <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-zinc-100">
@@ -488,7 +488,7 @@ function FeatureRow({
             transition={{
               duration: 0.8,
               delay: delay + 0.2,
-              ease: [0.22, 1, 0.36, 1],
+              ease: [0.22, 1, 0.36, 1] as const,
             }}
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -502,6 +502,22 @@ function FeatureRow({
         </div>
       </motion.div>
 
+      {/* Mobile Image - shown only on mobile/tablet, hidden on lg+ */}
+      <motion.div
+        className="lg:hidden relative overflow-hidden rounded-2xl"
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.6, delay: delay }}
+      >
+        <div className="group relative aspect-[16/9] overflow-hidden rounded-2xl bg-zinc-100">
+          <img
+            src={image}
+            alt={imageAlt}
+            className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+          />
+        </div>
+      </motion.div>
+
       {/* Content */}
       <div className={imagePosition === "right" ? "lg:order-1" : "lg:order-2"}>
         <motion.div variants={itemVariants}>
@@ -510,22 +526,22 @@ function FeatureRow({
 
         <motion.h3
           variants={itemVariants}
-          className="mt-2 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl"
+          className="mt-2 text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl"
         >
           {title}
         </motion.h3>
 
         <motion.p
           variants={itemVariants}
-          className="mt-4 text-base leading-7 text-zinc-600"
+          className="mt-3 text-sm sm:text-base leading-7 text-zinc-600"
         >
           {description}
         </motion.p>
 
-        {/* Features list */}
+        {/* Features list - single column on mobile */}
         <motion.ul
           variants={itemVariants}
-          className="mt-6 grid grid-cols-2 gap-3"
+          className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3"
         >
           {features.map((feature) => (
             <li key={feature} className="flex items-center gap-2 text-sm text-zinc-600">
