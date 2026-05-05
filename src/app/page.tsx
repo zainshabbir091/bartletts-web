@@ -4,6 +4,17 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Reveal } from "@/components/reveal";
 import { ScrollDown } from "@/components/scroll-down";
+import { Montserrat, Playfair_Display } from "next/font/google";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
 
 // Professional text reveal with word-by-word animation
 function AnimatedHeading({
@@ -170,6 +181,9 @@ function StaggerCards({
 export default function Home() {
   return (
     <div className="relative">
+      <MobileHome />
+
+      <div className="hidden md:block">
       {/* Hero */}
       <section className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0">
@@ -182,7 +196,7 @@ export default function Home() {
               loop
               muted
               playsInline
-              className="h-full w-full object-cover"
+              className="h-full w-full bg-black object-contain sm:object-cover"
             />
           </div>
           {/* Subtle dark overlay for text readability */}
@@ -388,7 +402,306 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
+      </div>
     </div>
+  );
+}
+
+function MobileHome() {
+  const quickStats = [
+    { label: "Rating", value: "3.8 / 5", meta: "838 reviews" },
+    { label: "Open", value: "24/7", meta: "Every day" },
+    { label: "Price", value: "Rs 1k-2k", meta: "Per person" },
+  ];
+
+  const mobileShowcaseCards = [
+    {
+      image: "/coffe-ezgif.com-webp-to-jpg-converter.jpg",
+      imageAlt: "Coffee cup and fresh pastry",
+      eyebrow: "Brewed to Perfection",
+      title: "Artisanal Coffee",
+      description: "V60 Pour-Over, Chemex, French Press, and AeroPress.",
+    },
+    {
+      image: "/latte-ezgif.com-webp-to-jpg-converter.jpg",
+      imageAlt: "Signature latte art",
+      eyebrow: "Creative Flavors",
+      title: "Signature Lattes",
+      description: "Turtle Mocha, Berry White Mocha, Campfire Mocha, and more.",
+    },
+    {
+      image: "/panini-ezgif.com-webp-to-jpg-converter.jpg",
+      imageAlt: "Dessert and bakery selection",
+      eyebrow: "Freshly Baked",
+      title: "Desserts and Bakes",
+      description: "Cheesecake, muffins, cookies, and daily baked specials.",
+    },
+  ];
+
+  const ctaItems = [
+    {
+      label: "Dine-in",
+      icon: (
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M4 6v6M7 6v6M4 9h3M11 6v12M16 8h5M18.5 8v10"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+        </svg>
+      ),
+    },
+    {
+      label: "Takeout",
+      icon: (
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M5 9h14l-1 9H6L5 9ZM9 9V7a3 3 0 0 1 6 0v2"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+    },
+    {
+      label: "Delivery",
+      icon: (
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M3 7h11v8H3V7Zm11 2h3l3 3v3h-6V9Zm-7 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+    },
+  ];
+
+  return (
+    <div
+      className={`md:hidden ${montserrat.className} bg-[#0B1218] pb-24 text-white`}
+    >
+      <section className="relative min-h-[100svh] overflow-hidden bg-[#0B1218]">
+        <div className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-video-element */}
+          <video
+            src="/hero-video.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover object-center opacity-70"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#091017]/70 via-[#0b1218]/65 to-[#0B1218]/95" />
+        </div>
+
+        <div className="relative mx-auto flex min-h-[100svh] max-w-md flex-col justify-center px-5 pb-8 pt-24">
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex w-fit items-center gap-2 rounded-[4px] border border-[#C4A45A]/60 bg-[#151F28]/70 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-[#C4A45A]"
+          >
+            ★ 3.8 / 5
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className={`${playfair.className} mt-4 text-[38px] font-semibold leading-[1.05] tracking-tight text-white`}
+          >
+            Premium coffee, calm ambiance, and food made fresh.
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-4 text-sm leading-7 tracking-tight text-[#A0A0A0]"
+          >
+            Bartlett&apos;s Cafe is cozy, elegant, and perfect for coffee breaks,
+            meetups, and relaxed evenings.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-7 space-y-3"
+          >
+            <a
+              href="/menu"
+              className="inline-flex h-11 w-full items-center justify-center rounded-[4px] bg-[#C4A45A] px-5 text-sm font-semibold text-[#0B1218] shadow-lg"
+            >
+              Explore the Menu
+            </a>
+            <a
+              href="/contact"
+              className="inline-flex h-11 w-full items-center justify-center rounded-[4px] border border-white/30 bg-transparent px-5 text-sm font-semibold text-white"
+            >
+              Find us in Gulberg Arena Mall
+            </a>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-6 grid grid-cols-3 gap-2"
+          >
+            {ctaItems.map((item) => (
+              <div
+                key={item.label}
+                className="flex flex-col items-center gap-1 rounded-[4px] border border-[#C4A45A]/30 bg-[#151F28]/80 px-2 py-3 text-[#C4A45A]"
+              >
+                {item.icon}
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#D4BE83]">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            className="mt-7 flex justify-center"
+            animate={{ y: [0, 7, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <a
+              href="#mobile-highlights"
+              className="inline-flex items-center gap-2 rounded-[4px] border border-[#C4A45A]/40 bg-[#0f1720]/60 px-3 py-1.5 text-xs font-medium text-[#C4A45A]"
+            >
+              Scroll
+              <span aria-hidden>↓</span>
+            </a>
+          </motion.div>
+        </div>
+      </section>
+
+      <section id="mobile-highlights" className="mx-auto max-w-md space-y-8 px-5 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+        >
+          <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#C4A45A]">
+            Our Specialties
+          </p>
+          <h2
+            className={`${playfair.className} mt-2 text-3xl font-semibold leading-tight text-white`}
+          >
+            Crafted for coffee lovers
+          </h2>
+          <p className="mt-3 text-sm leading-7 tracking-tight text-[#A0A0A0]">
+            From artisanal brews to signature lattes, plus pastries, cakes,
+            sandwiches, and more.
+          </p>
+        </motion.div>
+
+        <motion.dl
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="grid grid-cols-3 gap-2"
+        >
+          {quickStats.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-[4px] border border-[#C4A45A]/30 bg-[#151F28] p-3 text-center"
+            >
+              <dt className="text-[10px] uppercase tracking-[0.2em] text-[#A0A0A0]">
+                {stat.label}
+              </dt>
+              <dd className="mt-1 text-sm font-semibold text-white">{stat.value}</dd>
+              <dd className="text-[10px] text-[#A0A0A0]">{stat.meta}</dd>
+            </div>
+          ))}
+        </motion.dl>
+
+        <div className="space-y-7">
+          {mobileShowcaseCards.map((feature, index) => (
+            <MobileFeatureCard
+              key={feature.title}
+              image={feature.image}
+              imageAlt={feature.imageAlt}
+              eyebrow={feature.eyebrow}
+              title={feature.title}
+              description={feature.description}
+              delay={index * 0.05}
+            />
+          ))}
+        </div>
+      </section>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#C4A45A]/30 bg-[#0B1218]/95 p-3 backdrop-blur-md">
+        <div className="mx-auto grid max-w-md grid-cols-2 gap-3">
+          <a
+            href="tel:+923293399440"
+            className="inline-flex h-11 items-center justify-center rounded-[4px] border border-white/30 text-sm font-semibold text-white"
+          >
+            Call
+          </a>
+          <a
+            href="/contact"
+            className="inline-flex h-11 items-center justify-center rounded-[4px] bg-[#C4A45A] text-sm font-semibold text-[#0B1218]"
+          >
+            Reserve
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MobileFeatureCard({
+  image,
+  imageAlt,
+  eyebrow,
+  title,
+  description,
+  delay,
+}: {
+  image: string;
+  imageAlt: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  delay: number;
+}) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.55, delay }}
+      className="overflow-hidden rounded-[4px] border border-[#C4A45A]/20 bg-[#151F28]"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 1.04 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, delay: delay + 0.05 }}
+        className="relative aspect-[16/10] overflow-hidden"
+      >
+        <img src={image} alt={imageAlt} className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B1218]/90 via-[#0B1218]/40 to-transparent" />
+        <div className="absolute inset-x-4 bottom-4 text-center">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[#D8C187]">{eyebrow}</p>
+          <h3 className={`${playfair.className} mt-1 text-3xl leading-none text-white`}>
+            {title}
+          </h3>
+          <p className="mt-2 text-xs leading-6 tracking-tight text-[#CFCFCF]">{description}</p>
+        </div>
+      </motion.div>
+    </motion.article>
   );
 }
 
@@ -505,8 +818,12 @@ function FeatureRow({
       {/* Mobile Image - shown only on mobile/tablet, hidden on lg+ */}
       <motion.div
         className="lg:hidden relative overflow-hidden rounded-2xl"
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        initial={{ opacity: 0, x: imageInitialX * 0.6, y: 20 }}
+        animate={
+          isInView
+            ? { opacity: 1, x: 0, y: 0 }
+            : { opacity: 0, x: imageInitialX * 0.6, y: 20 }
+        }
         transition={{ duration: 0.6, delay: delay }}
       >
         <div className="group relative aspect-[16/9] overflow-hidden rounded-2xl bg-zinc-100">

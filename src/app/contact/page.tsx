@@ -71,7 +71,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
+    <div className="internal-mobile-page min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
       {/* Hero Section */}
       <section className="relative overflow-hidden px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="absolute inset-0">
@@ -82,7 +82,7 @@ export default function ContactPage() {
         <Container className="relative">
           <div className="mx-auto max-w-4xl text-center">
             <Reveal>
-              <p className="inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-medium tracking-wide text-amber-400">
+              <p className="mobile-section-label inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-medium tracking-wide text-amber-400">
                 Get in Touch
               </p>
             </Reveal>
@@ -94,7 +94,7 @@ export default function ContactPage() {
             </Reveal>
 
             <Reveal delay={0.14}>
-              <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base leading-7 text-zinc-400">
+              <p className="mobile-muted-text mx-auto mt-4 max-w-2xl text-sm sm:text-base leading-7 text-zinc-400">
                 Visit us at Gulberg Arena Mall in Gulberg Greens, Islamabad. Open 24 hours for your coffee cravings.
               </p>
             </Reveal>
@@ -108,18 +108,18 @@ export default function ContactPage() {
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {contactCards.map((card, idx) => (
               <Reveal key={card.title} delay={0.05 * idx}>
-                <div className="group rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 transition hover:border-zinc-700 hover:bg-zinc-900/60">
+                <div className="mobile-card group rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 transition hover:border-zinc-700 hover:bg-zinc-900/60">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
                     {card.icon}
                   </div>
                   <h3 className="mt-4 font-semibold text-white">{card.title}</h3>
-                  <div className="mt-2 space-y-0.5">
+                  <ul className="mobile-explore-list mt-2 space-y-0.5">
                     {card.lines.map((line) => (
-                      <p key={line} className="text-sm text-zinc-400">
-                        {line}
-                      </p>
+                      <li key={line} className="text-sm text-zinc-400">
+                        <span>{line}</span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                   {card.action && (
                     <a
                       href={card.action.href}
@@ -144,7 +144,7 @@ export default function ContactPage() {
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
             {/* Map */}
             <Reveal delay={0.1}>
-              <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
+              <div className="mobile-card overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
                 <div className="border-b border-zinc-800 bg-zinc-900/60 p-4">
                   <h2 className="font-semibold text-white flex items-center gap-2">
                     <svg className="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -166,7 +166,7 @@ export default function ContactPage() {
                     className="absolute inset-0"
                   />
                   {/* Map Overlay Card */}
-                  <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-zinc-700 bg-zinc-900/95 p-4 backdrop-blur-sm sm:left-auto sm:right-4 sm:w-72">
+                  <div className="mobile-card absolute bottom-4 left-4 right-4 rounded-xl border border-zinc-700 bg-zinc-900/95 p-4 backdrop-blur-sm sm:left-auto sm:right-4 sm:w-72">
                     <div className="flex items-start gap-3">
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500">
                         <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,7 +196,7 @@ export default function ContactPage() {
 
             {/* Contact Form */}
             <Reveal delay={0.15}>
-              <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
+              <div className="mobile-card overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40">
                 <div className="border-b border-zinc-800 bg-zinc-900/60 p-4">
                   <h2 className="font-semibold text-white flex items-center gap-2">
                     <svg className="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -283,7 +283,7 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition hover:from-amber-400 hover:to-amber-500 hover:shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="mobile-main-button inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition hover:from-amber-400 hover:to-amber-500 hover:shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {isSubmitting ? (
                         <>
@@ -299,7 +299,7 @@ export default function ContactPage() {
                     </button>
                   </form>
 
-                  <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950/30 p-4">
+                  <div className="mobile-card mt-6 rounded-xl border border-zinc-800 bg-zinc-950/30 p-4">
                     <p className="text-xs text-zinc-500">
                       <span className="font-medium text-zinc-400">Note:</span> For immediate assistance, please call us directly at{" "}
                       <a href="tel:03293399440" className="text-amber-400 hover:text-amber-300">

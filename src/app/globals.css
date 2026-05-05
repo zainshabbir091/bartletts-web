@@ -134,3 +134,81 @@ html {
 .animate-scroll-up:hover {
   animation-play-state: paused;
 }
+
+@media screen and (max-width: 768px) {
+  .internal-mobile-page {
+    background: #0b1218;
+    color: #ffffff;
+    padding-bottom: 92px;
+  }
+
+  .internal-mobile-page section {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  .internal-mobile-page .mobile-section-label {
+    color: #c4a45a !important;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .internal-mobile-page .mobile-card {
+    border: 1px solid rgba(196, 164, 90, 0.28) !important;
+    background: linear-gradient(
+      180deg,
+      rgba(21, 31, 40, 0.94) 0%,
+      rgba(11, 18, 24, 0.96) 100%
+    ) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+  }
+
+  .internal-mobile-page .mobile-stat-card {
+    border: 1px solid rgba(196, 164, 90, 0.3) !important;
+    background: #072d2b !important;
+    border-radius: 4px !important;
+  }
+
+  .internal-mobile-page .mobile-main-button {
+    background: #c4a45a !important;
+    color: #0b1218 !important;
+    border: 1px solid #c4a45a !important;
+    border-radius: 4px !important;
+    font-weight: 600;
+  }
+
+  .internal-mobile-page .mobile-secondary-button {
+    background: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    border-radius: 4px !important;
+    font-weight: 600;
+  }
+
+  .internal-mobile-page .mobile-muted-text {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .internal-mobile-page .mobile-explore-list a,
+  .internal-mobile-page .mobile-explore-list li {
+    color: rgba(255, 255, 255, 0.78) !important;
+  }
+
+  .internal-mobile-page .mobile-explore-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .internal-mobile-page .mobile-explore-list li::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    border-radius: 9999px;
+    background: #c4a45a;
+    flex-shrink: 0;
+  }
+}

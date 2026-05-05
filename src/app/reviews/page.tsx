@@ -132,7 +132,7 @@ export default function ReviewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
+    <div className="internal-mobile-page min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
       {/* Hero Section */}
       <section className="relative overflow-hidden px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="absolute inset-0">
@@ -143,7 +143,7 @@ export default function ReviewsPage() {
         <Container className="relative">
           <div className="mx-auto max-w-4xl text-center">
             <Reveal>
-              <p className="inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-medium tracking-wide text-amber-400">
+              <p className="mobile-section-label inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-medium tracking-wide text-amber-400">
                 Customer Stories
               </p>
             </Reveal>
@@ -155,7 +155,7 @@ export default function ReviewsPage() {
             </Reveal>
 
             <Reveal delay={0.14}>
-              <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base leading-7 text-zinc-400">
+              <p className="mobile-muted-text mx-auto mt-4 max-w-2xl text-sm sm:text-base leading-7 text-zinc-400">
                 Discover why coffee lovers choose Bartlett&apos;s Café. Real reviews
                 from real guests who have experienced our premium coffee and cozy
                 ambiance.
@@ -165,7 +165,7 @@ export default function ReviewsPage() {
             {/* Stats Cards */}
             <Reveal delay={0.2}>
               <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
+                <div className="mobile-stat-card rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
                   <div className="flex items-center justify-center gap-1">
                     <span className="text-2xl font-bold text-white">
                       {averageRating.toFixed(1)}
@@ -180,19 +180,19 @@ export default function ReviewsPage() {
                   <p className="mt-1 text-xs text-zinc-500">Average Rating</p>
                 </div>
 
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
+                <div className="mobile-stat-card rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
                   <div className="text-2xl font-bold text-white">
                     {reviews.length}+
                   </div>
                   <p className="mt-1 text-xs text-zinc-500">Reviews</p>
                 </div>
 
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
+                <div className="mobile-stat-card rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
                   <div className="text-2xl font-bold text-white">100%</div>
                   <p className="mt-1 text-xs text-zinc-500">Recommended</p>
                 </div>
 
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
+                <div className="mobile-stat-card rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
                   <div className="text-2xl font-bold text-white">24h</div>
                   <p className="mt-1 text-xs text-zinc-500">Response Time</p>
                 </div>
@@ -220,7 +220,7 @@ export default function ReviewsPage() {
               <div className="space-y-4">
                 {reviews.map((review, idx) => (
                   <Reveal key={review.id} delay={0.05 * idx}>
-                    <div className="group rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 transition hover:border-zinc-700 hover:bg-zinc-900/60">
+                    <div className="mobile-card group rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 transition hover:border-zinc-700 hover:bg-zinc-900/60">
                       <div className="flex items-start gap-4">
                         <Avatar initials={review.avatar} name={review.name} />
 
@@ -292,7 +292,7 @@ export default function ReviewsPage() {
             <div className="lg:col-span-4">
               <div className="lg:sticky lg:top-6">
                 <Reveal delay={0.1}>
-                  <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 to-zinc-950">
+                  <div className="mobile-card overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 to-zinc-950">
                     <div className="border-b border-zinc-800 bg-zinc-900/50 p-6">
                       <h3 className="text-lg font-semibold text-white">
                         Write a Review
@@ -416,7 +416,7 @@ export default function ReviewsPage() {
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition hover:from-amber-400 hover:to-amber-500 hover:shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="mobile-main-button mt-2 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition hover:from-amber-400 hover:to-amber-500 hover:shadow-amber-500/30 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {isSubmitting ? (
                             <>
@@ -452,7 +452,7 @@ export default function ReviewsPage() {
 
                 {/* Trust Badge */}
                 <Reveal delay={0.2}>
-                  <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-4">
+                  <div className="mobile-card mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-4">
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10">
                         <svg

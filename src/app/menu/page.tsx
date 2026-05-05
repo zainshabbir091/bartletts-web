@@ -68,7 +68,7 @@ export default function MenuPage() {
 
   // ─────────────────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen" style={{ background: "#0b0b0c", fontFamily: "'Georgia', serif" }}>
+    <div className="internal-mobile-page min-h-screen" style={{ background: "#0b0b0c", fontFamily: "'Georgia', serif" }}>
 
       {/* ══════════════════════════════════════════════════════════════════════
           MOBILE HERO SECTION (mobile only)
@@ -78,7 +78,7 @@ export default function MenuPage() {
           {/* Left: text */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-              <span style={{ background: "#f59e0b", color: "#fff", borderRadius: 4, fontSize: 11, fontWeight: 700, padding: "2px 10px", letterSpacing: 2 }}>PRICE</span>
+              <span className="mobile-section-label" style={{ background: "#f59e0b", color: "#fff", borderRadius: 4, fontSize: 11, fontWeight: 700, padding: "2px 10px", letterSpacing: 2 }}>PRICE</span>
               <span style={{ fontSize: 24, fontWeight: 900, color: "#f59e0b" }}>
                 {heroItem?.pricePkr ? `PKR ${heroItem.pricePkr}` : "Ask"}
               </span>
@@ -101,7 +101,7 @@ export default function MenuPage() {
               <span style={{ color: "#a1a1aa", fontSize: 12 }}>({heroReviews})</span>
             </div>
 
-            <p style={{ color: "#a1a1aa", lineHeight: 1.6, marginBottom: 20, fontSize: 14 }}>
+            <p className="mobile-muted-text" style={{ color: "#a1a1aa", lineHeight: 1.6, marginBottom: 20, fontSize: 14 }}>
               {heroItem?.description ?? "Experience the finest blend of traditional recipes and premium ingredients, crafted to perfection in every bite."}
             </p>
 
@@ -111,6 +111,7 @@ export default function MenuPage() {
                 onClick={() => {
                   document.getElementById("categories-section")?.scrollIntoView({ behavior: "smooth" });
                 }}
+                className="mobile-main-button"
                 style={{ background: "#f59e0b", color: "#0b0b0c", border: "none", borderRadius: 40, padding: "12px 24px", fontWeight: 700, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, boxShadow: "0 8px 24px rgba(245,158,11,0.35)" }}
               >
                 View Menu
@@ -120,6 +121,7 @@ export default function MenuPage() {
                 onClick={() => {
                   document.getElementById("categories-section")?.scrollIntoView({ behavior: "smooth" });
                 }}
+                className="mobile-secondary-button"
                 style={{ background: "transparent", color: "#fafafa", border: "2px solid #27272a", borderRadius: 40, padding: "12px 24px", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
               >
                 Explore More
@@ -283,7 +285,7 @@ export default function MenuPage() {
         {/* Section header for categories view */}
         {view === "categories" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: "center", marginBottom: 48 }}>
-            <span style={{ background: "#f59e0b", color: "#0b0b0c", borderRadius: 4, fontSize: 11, fontWeight: 700, padding: "3px 14px", letterSpacing: 2, display: "inline-block", marginBottom: 12 }}>
+            <span className="mobile-section-label" style={{ background: "#f59e0b", color: "#0b0b0c", borderRadius: 4, fontSize: 11, fontWeight: 700, padding: "3px 14px", letterSpacing: 2, display: "inline-block", marginBottom: 12 }}>
               OUR MENU
             </span>
             <h2 style={{ fontSize: "clamp(32px,4vw,52px)", fontWeight: 900, color: "#fafafa", margin: 0 }}>

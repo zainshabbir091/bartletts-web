@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { MobileStickyActions } from "@/components/mobile-sticky-actions";
 import Script from "next/script";
 
 const geistSans = Geist({
@@ -51,6 +52,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <MobileStickyActions />
       </body>
     </html>
   );

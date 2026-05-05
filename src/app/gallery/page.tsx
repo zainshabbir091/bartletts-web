@@ -43,22 +43,35 @@ export default function GalleryPage() {
     tall: 320,
   };
 
+  const heroImageSrc = images[0]?.src ?? "/coffe-ezgif.com-webp-to-jpg-converter.jpg";
+
   return (
-    <div className="surface min-h-screen">
+    <div className="surface internal-mobile-page min-h-screen">
       {/* Hero Section */}
-      <div className="lg:grid lg:grid-cols-2 min-h-[50vh] overflow-hidden">
+      <div className="relative lg:grid lg:grid-cols-2 overflow-hidden md:min-h-[42vh] lg:min-h-[50vh]">
+          <Image
+            src={heroImageSrc}
+            alt="Cafe interior background"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0B1218]/58 via-[#0B1218]/72 to-[#0B1218]/86" />
+          <div className="absolute inset-0 bg-[radial-gradient(80%_85%_at_8%_10%,rgba(196,164,90,0.14),transparent_60%)]" />
           {/* Left Side - Title Section */}
-          <div className="flex flex-col justify-center px-4 sm:px-8 lg:px-16 py-8">
-            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-serif italic tracking-tight">
+          <div className="relative z-10 flex flex-col justify-center px-4 py-5 sm:px-8 sm:py-8 lg:px-16">
+            <p className="mobile-section-label relative animate-gallery-in-up">Gallery</p>
+            <h1 className="relative mt-2 text-3xl sm:text-5xl lg:text-7xl font-serif italic tracking-tight text-white animate-gallery-in-up animation-delay-1">
               Gallery
             </h1>
-            <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-zinc-600 max-w-md">
-              More than just a café, Bartlett's is a place where moments are
+            <p className="relative mt-3 max-w-md text-base leading-relaxed text-white/85 sm:mt-5 sm:text-lg animate-gallery-in-up animation-delay-2">
+              More than just a café, Bartlett&apos;s is a place where moments are
               captured, memories are made, and every cup tells a story.
             </p>
 
             {/* Signature */}
-            <div className="mt-12">
+            <div className="mt-8 hidden md:block">
               <svg
                 viewBox="0 0 200 60"
                 className="h-16 w-auto"
@@ -74,7 +87,7 @@ export default function GalleryPage() {
             </div>
 
             {/* Vertical line */}
-            <div className="mt-8">
+            <div className="mt-6 hidden md:block">
               <div className="w-px h-16 bg-gradient-to-b from-zinc-400 to-transparent" />
             </div>
           </div>
@@ -154,22 +167,25 @@ export default function GalleryPage() {
         {/* Full Gallery Grid Section - Masonry Layout */}
         <Container>
           {images.length > 0 && (
-          <div className="py-12 sm:py-24">
-            <h2 className="text-xl sm:text-2xl font-semibold text-center mb-8 sm:mb-12">
+          <div className="py-6 sm:py-24">
+            <h2 id="all-moments" className="animate-gallery-in-up animation-delay-2 text-xl sm:text-2xl font-semibold text-center mb-6 sm:mb-12">
               All Moments
             </h2>
 
             {/* Mobile: True masonry with CSS columns (2 columns, staggered) */}
             <div className="lg:hidden columns-2 gap-3">
               {images.map((img, index) => (
-                <div
+                <a
                   key={img.src}
+                  href={`#gallery-image-${index}`}
                   className={`
-                    break-inside-avoid mb-3
-                    group relative overflow-hidden rounded-2xl
+                    break-inside-avoid mb-3 block
+                    group relative overflow-hidden rounded-3xl
+                    border border-[#C4A45A]/25
                     bg-gradient-to-br from-zinc-800 to-zinc-700
-                    shadow-md
+                    shadow-md animate-gallery-card-in
                   `}
+                  style={{ animationDelay: `${Math.min(index * 70, 650)}ms` }}
                 >
                   <Image
                     src={img.src}
@@ -179,24 +195,27 @@ export default function GalleryPage() {
                     sizes="(max-width: 768px) 50vw"
                     className="w-full h-auto object-cover"
                   />
-                </div>
+                </a>
               ))}
             </div>
 
             {/* Tablet/Desktop: Original grid layout preserved */}
             <div className="hidden lg:grid grid-cols-4 gap-4 auto-rows-[200px]">
               {images.map((img, index) => (
-                <div
+                <a
                   key={img.src}
+                  href={`#gallery-image-${index}`}
                   className={`
-                    group relative overflow-hidden rounded-3xl
+                    group relative overflow-hidden rounded-[2rem]
+                    border border-white/10
                     bg-gradient-to-br from-zinc-100 to-zinc-200
-                    shadow-md transition-all duration-500 ease-out
+                    shadow-md transition-all duration-500 ease-out animate-gallery-card-in
                     hover:shadow-2xl hover:shadow-amber-500/20
                     ${img.size === "tall" ? "row-span-2" : ""}
                   `}
                   style={{
                     gridRow: img.size === "tall" ? "span 2" : "auto",
+                    animationDelay: `${Math.min(index * 60, 760)}ms`,
                   }}
                 >
                   <Image
@@ -222,9 +241,38 @@ export default function GalleryPage() {
                       {img.alt}
                     </p>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
+
+            {images.map((img, index) => (
+              <div
+                key={`modal-${img.src}`}
+                id={`gallery-image-${index}`}
+                className="gallery-lightbox fixed inset-0 z-[70] hidden items-center justify-center bg-black/90 p-4"
+              >
+                <a href="#" className="absolute inset-0" aria-label="Close image preview" />
+                <div className="relative z-10 w-full max-w-4xl">
+                  <a
+                    href="#"
+                    aria-label="Close preview"
+                    className="mb-3 ml-auto flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-black/40 text-white"
+                  >
+                    ✕
+                  </a>
+                  <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-black">
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      width={1600}
+                      height={1000}
+                      sizes="100vw"
+                      className="h-auto w-full object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -241,6 +289,48 @@ export default function GalleryPage() {
           </div>
         )}
         </Container>
+      <style>{`
+        @keyframes galleryInUp {
+          from {
+            opacity: 0;
+            transform: translateY(18px);
+            filter: blur(3px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+          }
+        }
+
+        @keyframes galleryCardIn {
+          from {
+            opacity: 0;
+            transform: translateY(26px) scale(0.985);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        .animate-gallery-in-up {
+          opacity: 0;
+          animation: galleryInUp 650ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .animation-delay-1 { animation-delay: 120ms; }
+        .animation-delay-2 { animation-delay: 220ms; }
+
+        .animate-gallery-card-in {
+          opacity: 0;
+          animation: galleryCardIn 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .gallery-lightbox:target {
+          display: flex;
+        }
+      `}</style>
     </div>
   );
 }
